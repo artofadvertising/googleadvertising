@@ -117,4 +117,4 @@ Verwachte uitkomst: `/google-ads-kosten` en beide `.html`-varianten sturen in é
 
 - [x] Alle regels groen op productie, gemeten na de deploy (uitzonderingen: beschrijvingen naar fase 3, titel homepage 67 tekens, `security.txt` optioneel)
 - [x] Sitemap-adressen geven allemaal 200 (42 van 42, gemeten na de deploy)
-- [ ] Search Console meldt geen "uitgesloten door noindex" op pagina's die moeten ranken (kan pas na fase 2)
+- [ ] Search Console meldt geen "uitgesloten door noindex" op pagina's die moeten ranken (property staat sinds 24-11-2026; het rapport Pagina's vult zich in de dagen daarna)
