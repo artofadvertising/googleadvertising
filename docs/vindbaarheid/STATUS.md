@@ -12,9 +12,9 @@ Klant en bureau zijn hier dezelfde partij: googleadvertising.nl is een label van
 | 1 | Technische basis | Deels (live en op productie groen gemeten; controle in Search Console wacht op fase 2) | 24-11-2026 | Na fase 2: URL-inspectie op de homepage en één dienstpagina. Beslissen over de titel van de homepage (67 tekens) |
 | 2 | Accounts en registraties | Open | | Search Console: domein-property, TXT-record bij mijndomein, sitemap indienen. Daarna Bing importeren |
 | 3 | Zoekwoorden en content | Open (eerste lijst staat in `zoekwoorden.md`) | 24-11-2026 | Volumes ophalen, beschrijvingen op lengte, regiopagina's eigen inhoud |
-| 4 | Structured data | Deels (Organization, Service, FAQ, Breadcrumb, Article staan er) | 24-11-2026 | `WebSite` en `WebPage` op elke pagina, logo, KvK; valideren |
+| 4 | Structured data | Deels (markup compleet en lokaal gecontroleerd, PR 2; validatie op de live site volgt) | 24-11-2026 | Na samenvoegen valideren op validator.schema.org en in de Rich Results Test; KvK-nummer invullen; beslissen over `sameAs` |
 | 5 | Lokale vindbaarheid | Open | | Beslissen: eigen Bedrijfsprofiel of onderdeel van dat van Art of Advertising |
-| 6 | Performance | Open (Lighthouse mobiel 90 en 99) | 24-11-2026 | Afbeeldingen naar AVIF/WebP met `srcset`, fonts zelf hosten |
+| 6 | Performance | Deels (foto's in AVIF/WebP met `srcset`, fonts zelf gehost, PR 2; lokaal 100 en 100, LCP 1,7 s) | 24-11-2026 | Na samenvoegen Lighthouse op productie herhalen; beslissen over het contrast van de labels "Stap 2" en "Stap 3" |
 | 7 | Meting en consent | Open (er draait nog niets) | | Tag Manager-container, cookiebanner, conversies bellen en WhatsApp-aanvraag |
 | 8 | Autoriteit en links | Open | | Link vanaf artofadvertising.nl; aanmelden bij Trustoo, Sortlist, Semrush Agency Partners |
 | 9 | AI-vindbaarheid | Deels (`llms.txt` en AI-crawlers geregeld) | 24-11-2026 | Eerste meting met de drie vragen zodra de site in Bing staat |
@@ -56,4 +56,5 @@ Geen op productiepagina's die moeten ranken. Blijvend op noindex: `/aanvragen/be
 
 - 24-11-2026: HTTPS hersteld. Twee AAAA-records bij mijndomein verwijderd en een CNAME voor `www` naar Vercel toegevoegd; Vercel gaf daarna de certificaten uit. Op `_dmarc` staat nog een CNAME naar Vercel die daar niet hoort; verwijderen of vervangen door een echte DMARC-regel.
 - 24-11-2026: fase 0 uitgevoerd, fase 1 als PR aangeboden.
+- 24-11-2026: fase 4 en 6 als PR 2 aangeboden (structured data aangevuld, foto's in AVIF/WebP, fonts zelf gehost).
 - 24-11-2026: PR 1 samengevoegd (merge-commit `b78a4d6`) en op productie gemeten: alle punten van fase 1 groen, 42 van 42 sitemap-adressen geven 200.

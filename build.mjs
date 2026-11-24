@@ -22,17 +22,29 @@ const cardAccents = ['var(--accent)', 'var(--accent2)', 'var(--accent3)'];
 const sparkline = (color) => `<svg class="spark" width="90" height="26" viewBox="0 0 90 26" fill="none" aria-hidden="true" style="color:${color}"><path d="M2 22 L18 16 L34 18 L50 9 L66 11 L88 3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const byline = () => `<p class="small">Door <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${esc(site.specialist.name)}</a>, ${esc(site.specialist.role)} — bijgewerkt op ${new Date(site.updated).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</p>`;
 
+// Foto's staan als JPG (2000 breed) in public/assets; tools/convert-images.mjs maakt de AVIF- en WebP-varianten.
+const PHOTO_WIDTHS = [480, 800, 1200];
+const photo = (name, alt, sizes, { cls = 'photo', style = '' } = {}) => {
+  const set = (ext) => PHOTO_WIDTHS.map((w) => `/assets/${name}-${w}.${ext} ${w}w`).join(', ');
+  return `<picture><source type="image/avif" srcset="${set('avif')}" sizes="${sizes}"><source type="image/webp" srcset="${set('webp')}" sizes="${sizes}"><img${cls ? ` class="${cls}"` : ''}${style ? ` style="${style}"` : ''} src="/assets/${name}.jpg" alt="${esc(alt)}" width="2000" height="1333" loading="lazy" decoding="async"></picture>`;
+};
+
 const specialistLd = { '@type': 'Person', '@id': `${site.url}/#specialist`, name: site.specialist.name, jobTitle: 'Google Ads-specialist', url: site.companyUrl, sameAs: [site.specialist.linkedin], worksFor: { '@id': `${site.url}/#organisatie` } };
 const org = {
   '@type': 'ProfessionalService', '@id': `${site.url}/#organisatie`, name: site.name, url: site.url,
   description: 'Google Ads uitbesteden aan een vaste specialist. Beheer vanaf € 199 per maand, inclusief Google Tag Manager, zonder minimumbudget en maandelijks opzegbaar.',
   telephone: site.phoneHref, priceRange: 'Vanaf € 199 per maand', areaServed: { '@type': 'Country', name: 'Nederland' },
   address: { '@type': 'PostalAddress', streetAddress: site.street, postalCode: site.zip, addressLocality: site.city, addressCountry: 'NL' },
-  parentOrganization: { '@type': 'Organization', name: site.company, url: site.companyUrl },
+  parentOrganization: { '@type': 'Organization', name: site.company, legalName: site.company, url: site.companyUrl },
   founder: { '@id': `${site.url}/#specialist` },
+  logo: `${site.url}/assets/logo-googleadvertising-512.png`,
   image: `${site.url}/assets/google-ads-specialist-in-overleg-met-klant.jpg`,
+  ...(site.kvk ? { identifier: { '@type': 'PropertyValue', propertyID: 'KvK', value: site.kvk } } : {}),
   sameAs: [site.reviews.url, 'https://www.instagram.com/aoa_marketing/'],
 };
+const websiteLd = { '@type': 'WebSite', '@id': `${site.url}/#website`, url: `${site.url}/`, name: site.name, inLanguage: 'nl-NL', publisher: { '@id': `${site.url}/#organisatie` } };
+// Vaste ankers per paginaonderdeel, zodat objecten naar elkaar kunnen verwijzen.
+const LD_ANCHOR = { FAQPage: 'faq', BreadcrumbList: 'breadcrumb', Service: 'dienst', Article: 'artikel' };
 const faqLd = (faq) => ({ '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
 const crumbLd = (trail) => ({ '@type': 'BreadcrumbList', itemListElement: trail.map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, item: site.url + path })) });
 
@@ -76,7 +88,12 @@ function page({ path, title, desc, body, ld = [], noindex = false, scripts = '',
   if (!fullTitle && title.length > 60 && title.endsWith(SUFFIX)) title = title.slice(0, -SUFFIX.length);
   if (!fullTitle && title.length > 60) console.warn(`LET OP: titel langer dan 60 tekens (${title.length}) op ${path}: ${title}`);
   const canonical = site.url + path;
-  const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, specialistLd, ...ld] });
+  // Elke pagina: organisatie, specialist, website en de pagina zelf; de onderdelen uit `ld` krijgen een eigen @id.
+  const parts = ld.map((o) => (LD_ANCHOR[o['@type']] && !o['@id'] ? { '@id': `${canonical}#${LD_ANCHOR[o['@type']]}`, ...o } : o));
+  const crumb = parts.find((o) => o['@type'] === 'BreadcrumbList');
+  const webpage = { '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: title, description: desc, inLanguage: 'nl-NL', isPartOf: { '@id': `${site.url}/#website` }, about: { '@id': `${site.url}/#organisatie` }, primaryImageOfPage: { '@type': 'ImageObject', url: `${site.url}${OG_IMAGE}`, width: 1200, height: 630 }, ...(crumb ? { breadcrumb: { '@id': crumb['@id'] } } : {}) };
+  for (const o of parts) if (o['@type'] === 'Article') { o.image = `${site.url}${OG_IMAGE}`; o.isPartOf = { '@id': webpage['@id'] }; }
+  const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, specialistLd, websiteLd, ...(file ? [] : [webpage]), ...parts] });
   const html = `<!doctype html>
 <html lang="nl">
 <head>
@@ -98,9 +115,8 @@ ${file ? '' : `<meta property="og:url" content="${canonical}">\n`}<meta property
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Big+Shoulders+Display:wght@600;700;800&display=swap">
+<link rel="preload" href="/fonts/inter-latin-var-v20.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/big-shoulders-display-latin-var-v24.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">${graph}</script>
 </head>
@@ -214,7 +230,7 @@ ${faqBlock(`Vragen over een Google Ads specialist in ${c}.`, faq)}
 <section class="section alt"><div class="wrap stack gap-lg"><h2>Ook interessant</h2>${related(['google-ads-specialist', 'google-ads-audit', 'google-ads-kosten', 'google-ads-voor-lokale-dienstverleners'])}
 <nav class="chips" aria-label="Andere regio's">${cities.filter(([x]) => x !== c).map(([x]) => `<a href="/google-ads-specialist-${slugify(x)}/">Google Ads specialist ${x}</a>`).join('')}</nav>
 ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
-  page({ path, title: `Google Ads specialist ${c}: vanaf € 199 per maand | googleadvertising.nl`, desc: `Google Ads specialist voor bedrijven in ${c} en omgeving. Eén vast aanspreekpunt, wekelijks geoptimaliseerd, geen minimumbudget en maandelijks opzegbaar.`, body, ld: [crumbLd(trail), faqLd(faq)] });
+  page({ path, title: `Google Ads specialist ${c}: vanaf € 199 per maand | googleadvertising.nl`, desc: `Google Ads specialist voor bedrijven in ${c} en omgeving. Eén vast aanspreekpunt, wekelijks geoptimaliseerd, geen minimumbudget en maandelijks opzegbaar.`, body, ld: [crumbLd(trail), faqLd(faq), { '@type': 'Service', name: `Google Ads specialist ${c}`, serviceType: 'Google Ads beheer', description: `Google Ads beheer door een vaste specialist voor bedrijven in ${c} en omgeving.`, provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'City', name: c }, url: site.url + path }] });
 }
 
 // ---------- home ----------
@@ -270,7 +286,7 @@ ${badge}</div>
 </div></section>
 
 <section class="section" id="uitbesteden"><div class="wrap split">
-<div class="side"><img class="photo" style="object-position:45% 25%" src="/assets/google-ads-specialist-in-overleg-met-klant.jpg" alt="Google Ads specialist bespreekt de resultaten met een klant aan tafel" width="2000" height="1333"></div>
+<div class="side">${photo('google-ads-specialist-in-overleg-met-klant', 'Google Ads specialist bespreekt de resultaten met een klant aan tafel', '(min-width: 1072px) 460px, calc(100vw - 48px)', { style: 'object-position:45% 25%' })}</div>
 <div class="main prose"><p class="kicker">In het kort</p><h2 style="margin-top:0">Wat is Google Ads uitbesteden?</h2>
 <p class="first">Google Ads uitbesteden betekent dat een specialist je advertentiecampagnes in Google opzet, beheert en verbetert, terwijl jij eigenaar blijft van het account en het budget. In Nederland kost dat bij een vaste specialist vanaf € 199 per maand beheerfee, naast het advertentiebudget dat je rechtstreeks aan Google betaalt, zonder minimumbudget en maandelijks opzegbaar.</p>
 <p>Je betaalt het advertentiebudget rechtstreeks aan Google en een vaste beheerfee aan het bureau. De specialist kiest de zoekwoorden, schrijft de advertenties, sluit irrelevante zoekopdrachten uit en stuurt de biedingen bij op basis van wat er werkelijk binnenkomt.</p>
@@ -279,7 +295,7 @@ ${badge}</div>
 
 <section class="section alt" id="werkwijze"><div class="wrap stack gap-lg">
 <div class="head-row"><div class="stack"><p class="kicker">Werkwijze · de Scherpstelcyclus</p><h2>Van aanvraag naar draaiende campagnes in drie stappen.</h2></div>
-<img class="photo" style="aspect-ratio:3/2;object-position:50% 40%" src="/assets/google-ads-specialist-legt-aanpak-uit.jpg" alt="Google Ads specialist legt de aanpak uit op kantoor" width="2000" height="1333" loading="lazy"></div>
+${photo('google-ads-specialist-legt-aanpak-uit', 'Google Ads specialist legt de aanpak uit op kantoor', '(min-width: 900px) 400px, calc(100vw - 48px)', { style: 'aspect-ratio:3/2;object-position:50% 40%' })}</div>
 <ol class="steps grid g3">
 <li class="card"><span class="step-no">Stap 1</span><h3>Intake en accountcheck.</h3><p>We lopen je huidige account door: waar lekt budget weg, welke campagnes leveren klanten op en wat is een realistisch doel. Mkb-bedrijven kunnen na de intake direct aansluiten.</p></li>
 <li class="card"><span class="step-no b">Stap 2</span><h3>Opzet en meting.</h3><p>Campagnestructuur, zoekwoorden, advertenties en uitsluitingen. De conversiemeting koppelen we aan je formulieren, telefoon en waar mogelijk je CRM.</p></li>
@@ -289,7 +305,7 @@ ${badge}</div>
 
 <section class="section" id="diensten"><div class="wrap stack gap-lg">
 <div class="head-row"><div class="stack narrow"><p class="kicker">Diensten</p><h2>Alles uitbesteden of één onderdeel. Allebei kan.</h2><p class="lead">Volledig beheer is de meest gekozen vorm. Heb je zelf een marketeer in huis, dan nemen we alleen het deel over waar specialistische kennis voor nodig is.</p></div>
-<img class="photo" style="aspect-ratio:3/2;object-position:50% 35%" src="/assets/google-ads-team-aan-het-werk.jpg" alt="Het Google Ads team aan het werk op kantoor" width="2000" height="1333" loading="lazy"></div>
+${photo('google-ads-team-aan-het-werk', 'Het Google Ads team aan het werk op kantoor', '(min-width: 900px) 400px, calc(100vw - 48px)', { style: 'aspect-ratio:3/2;object-position:50% 35%' })}</div>
 <div class="grid g4">${svc.map(([s, t, d, f]) => `<a class="card${f ? ' feature' : ''}" href="/${s}/">${f ? '<span class="tag">Meest gekozen</span>' : ''}<h3>${t}</h3><p>${d}</p></a>`).join('')}</div>
 </div></section>
 
@@ -321,7 +337,7 @@ ${cases.map((c, i) => { const r = c.resultaten[0]; const col = cardAccents[i % c
 </div><div><a class="link-strong" href="/klantcases/">Bekijk alle klantcases</a></div></div></section>
 
 <section class="section" id="kantoor"><div class="wrap split">
-<div class="side"><img class="photo" style="object-position:50% 55%" src="/assets/kantoor-google-ads-bureau.jpg" alt="Kantoor van googleadvertising.nl aan de Coehoornsingel in Groningen" width="2000" height="1333" loading="lazy"></div>
+<div class="side">${photo('kantoor-google-ads-bureau', 'Kantoor van googleadvertising.nl aan de Coehoornsingel in Groningen', '(min-width: 952px) 340px, calc(100vw - 48px)', { style: 'object-position:50% 55%' })}</div>
 <div class="main prose"><p class="kicker">Ons kantoor</p><h2 style="margin-top:0">Een vast team in Groningen, voor klanten door heel Nederland.</h2>
 <p class="first">Googleadvertising.nl is een label van <a href="${site.companyUrl}">Art of Advertising</a>, aan de ${site.street} in ${site.city}. Daar werkt het team dat je account inricht, wekelijks bijstuurt en elke maand met je doorneemt wat er is veranderd. Onze ambitie: dat vaste team zijn voor steeds meer ondernemers door heel Nederland.</p>
 <p>De meeste klanten doen de intake en het maandoverleg gewoon online. Zit je in de buurt, dan ben je ook welkom op kantoor voor een kop koffie en een blik in je account.</p>
@@ -341,11 +357,11 @@ ${lb('Google Ads specialist per regio', 'Regio', cities.map(([c]) => [c, `/googl
 <div class="alt">${faqBlock('Alles wat je wilt weten voor je Google Ads uitbesteedt.', homeFaq)}</div>
 
 <section class="section" id="contact"><div class="wrap"><div class="band">
-<img src="/assets/google-ads-specialist-aan-de-telefoon.jpg" alt="Google Ads specialist aan de telefoon op kantoor" style="object-position:30% 35%" width="2000" height="1333" loading="lazy">
+${photo('google-ads-specialist-aan-de-telefoon', 'Google Ads specialist aan de telefoon op kantoor', '200px', { cls: '', style: 'object-position:30% 35%' })}
 <div class="txt"><h2>Klaar om meer uit je Google Ads te halen?</h2><p class="muted" style="font-size:18px">Vraag een voorstel aan of laat eerst je account checken. Je krijgt antwoord van de specialist die ook je campagnes gaat beheren.</p></div>
 <div class="act"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div>
 </div></div></section>`;
-  page({ path: '/', fullTitle: true, title: 'Google Ads uitbesteden vanaf € 199 per maand | googleadvertising.nl', desc: 'Google Ads uitbesteden aan een vaste specialist. Wekelijks geoptimaliseerd, Tag Manager inbegrepen, geen minimumbudget en maandelijks opzegbaar. Officieel Google Partner.', body, ld: [{ '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, inLanguage: 'nl' }, faqLd(homeFaq), { '@type': 'Service', name: 'Google Ads uitbesteden', serviceType: 'Google Ads beheer', provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, offers: { '@type': 'Offer', price: '199', priceCurrency: 'EUR', description: 'Beheer per maand, inclusief Google Tag Manager, maandelijks opzegbaar' } }] });
+  page({ path: '/', fullTitle: true, title: 'Google Ads uitbesteden vanaf € 199 per maand | googleadvertising.nl', desc: 'Google Ads uitbesteden aan een vaste specialist. Wekelijks geoptimaliseerd, Tag Manager inbegrepen, geen minimumbudget en maandelijks opzegbaar. Officieel Google Partner.', body, ld: [faqLd(homeFaq), { '@type': 'Service', name: 'Google Ads uitbesteden', serviceType: 'Google Ads beheer', url: `${site.url}/`, provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, offers: { '@type': 'Offer', price: '199', priceCurrency: 'EUR', description: 'Beheer per maand, inclusief Google Tag Manager, maandelijks opzegbaar' } }] });
 }
 
 // ---------- aanvragen ----------
