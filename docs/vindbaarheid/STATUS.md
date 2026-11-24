@@ -9,7 +9,7 @@ Klant en bureau zijn hier dezelfde partij: googleadvertising.nl is een label van
 | # | Fase | Status | Laatst | Volgende actie |
 |---|---|---|---|---|
 | 0 | Nulmeting en plan | Klaar | 24-11-2026 | KvK-nummer en eigenaar van de accounts aanleveren (zie nulmeting) |
-| 1 | Technische basis | Deels (PR open, op preview gemeten) | 24-11-2026 | PR samenvoegen en op productie meten met de reeks uit `01-techniek.md` |
+| 1 | Technische basis | Deels (live en op productie groen gemeten; controle in Search Console wacht op fase 2) | 24-11-2026 | Na fase 2: URL-inspectie op de homepage en één dienstpagina. Beslissen over de titel van de homepage (67 tekens) |
 | 2 | Accounts en registraties | Open | | Search Console: domein-property, TXT-record bij mijndomein, sitemap indienen. Daarna Bing importeren |
 | 3 | Zoekwoorden en content | Open (eerste lijst staat in `zoekwoorden.md`) | 24-11-2026 | Volumes ophalen, beschrijvingen op lengte, regiopagina's eigen inhoud |
 | 4 | Structured data | Deels (Organization, Service, FAQ, Breadcrumb, Article staan er) | 24-11-2026 | `WebSite` en `WebPage` op elke pagina, logo, KvK; valideren |
@@ -56,3 +56,4 @@ Geen op productiepagina's die moeten ranken. Blijvend op noindex: `/aanvragen/be
 
 - 24-11-2026: HTTPS hersteld. Twee AAAA-records bij mijndomein verwijderd en een CNAME voor `www` naar Vercel toegevoegd; Vercel gaf daarna de certificaten uit. Op `_dmarc` staat nog een CNAME naar Vercel die daar niet hoort; verwijderen of vervangen door een echte DMARC-regel.
 - 24-11-2026: fase 0 uitgevoerd, fase 1 als PR aangeboden.
+- 24-11-2026: PR 1 samengevoegd (merge-commit `b78a4d6`) en op productie gemeten: alle punten van fase 1 groen, 42 van 42 sitemap-adressen geven 200.
