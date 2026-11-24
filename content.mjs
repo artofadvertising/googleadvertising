@@ -389,8 +389,8 @@ export const cases = [
     ],
     resultaten: [
       { label: '80% lagere kosten per acquisitie', evidence: 'gemeten', scope: 'Google Ads', detail: 'Door scherpere targeting, betere advertenties en continue optimalisatie van de Google Ads-campagnes.' },
-      { label: '+122% meer productaanvragen', evidence: 'gemeten', scope: 'volledige marketingmix: Google Ads, Meta en SEO', detail: 'Het aantal productaanvragen steeg explosief; Mitsubishi haalt nu structureel meer leads binnen via de website.' },
-      { label: '+79% meer websiteverkeer', evidence: 'gemeten', scope: 'volledige marketingmix', detail: 'Meer bezoekers zorgden voor meer zichtbaarheid en een grotere stroom aan potentiële klanten.' },
+      { label: '+122% meer productaanvragen', evidence: 'gemeten', scope: 'Google Ads, Meta én SEO samen', detail: 'Het aantal productaanvragen steeg explosief; Mitsubishi haalt nu structureel meer leads binnen via de website.' },
+      { label: '+79% meer websiteverkeer', evidence: 'gemeten', scope: 'de hele marketingmix', detail: 'Meer bezoekers zorgden voor meer zichtbaarheid en een grotere stroom aan potentiële klanten.' },
     ],
     testimonial: { quote: 'Betrokken en betrouwbare partner voor onze B2B-marketing die echt met je meedenkt. Ze leveren een goed onderbouwde strategie die in de praktijk zijn vruchten afwerpt.', naam: 'Bianca Kuiper', functie: 'Marketing manager, Mitsubishi Forklift Trucks' },
     bron: 'https://artofadvertising.nl/projecten/mitsubishi-forklift-trucks',

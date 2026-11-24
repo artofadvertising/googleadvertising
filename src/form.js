@@ -51,3 +51,37 @@
     location.href = '/aanvragen/bedankt/';
   });
 })();
+
+// Gratis accountcheck: los, kort formulier met dezelfde WhatsApp-afhandeling.
+(function () {
+  var form = document.getElementById('accountcheck');
+  if (!form) return;
+  form.addEventListener('input', function (e) {
+    if (!e.target.name) return;
+    var el = form.querySelector('[data-err="' + e.target.name + '"]');
+    if (el) el.hidden = true;
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var d = new FormData(form);
+    if (String(d.get('bedrijfsnaam2') || '').trim()) return; // honeypot
+    var err = {
+      naam: !String(d.get('naam')).trim(),
+      email: !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(d.get('email')).trim()),
+      website: !String(d.get('website')).trim()
+    };
+    var bad = false;
+    Object.keys(err).forEach(function (k) {
+      var el = form.querySelector('[data-err="' + k + '"]');
+      if (el) el.hidden = !err[k];
+      if (err[k]) bad = true;
+    });
+    if (bad) { var first = form.querySelector('.err:not([hidden])'); if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+    var wa = (form.dataset.wa || '').replace(/\D/g, '');
+    if (!wa) { document.getElementById('form-err').hidden = false; return; }
+    var val = function (k) { return String(d.get(k) || '').trim(); };
+    var lines = ['Nieuwe accountcheck-aanvraag via googleadvertising.nl', '', 'Naam: ' + val('naam'), 'E-mail: ' + val('email'), 'Website: ' + val('website')];
+    window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    location.href = '/aanvragen/bedankt/';
+  });
+})();
