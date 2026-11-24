@@ -1,6 +1,6 @@
 # Fase 1: technische basis
 
-Datum: 24 november 2026. Status: wijzigingen staan in de PR van branch `vindbaarheid/fase-0-1`. "Vóór" is gemeten op productie (https://googleadvertising.nl, commit `b1f9b52`). "Na" is gemeten op de preview-deployment van de branch. De fase is pas klaar als dezelfde metingen op productie groen zijn; dat kan pas na het samenvoegen.
+Datum: 24 november 2026. Status: samengevoegd (PR 1, merge-commit `b78a4d6`) en op productie gemeten; alles groen. Open blijft alleen de controle in Search Console, die pas kan na fase 2. "Vóór" is gemeten op productie (https://googleadvertising.nl, commit `b1f9b52`). "Na" is eerst gemeten op de preview van de branch en daarna op productie (zie "Meting op productie").
 
 ## Checklist
 
@@ -19,8 +19,8 @@ Datum: 24 november 2026. Status: wijzigingen staan in de PR van branch `vindbaar
 |---|---|---|---|
 | `http://` naar `https://` | 308 | Ongewijzigd | Groen |
 | `www` naar apex | 308 naar `https://googleadvertising.nl` | Ongewijzigd | Groen |
-| Slash aan het eind: één vorm | `/google-ads-kosten` en `/google-ads-kosten/` gaven allebei 200 | Zonder slash stuurt door naar met slash (`trailingSlash: true`) | Groen op preview |
-| `/pagina.html` en `/pagina/index.html` | 308 naar de versie zonder slash (niet de canonieke) | Komt uit op de versie met slash | Groen op preview; aantal stappen meten op productie |
+| Slash aan het eind: één vorm | `/google-ads-kosten` en `/google-ads-kosten/` gaven allebei 200 | Zonder slash stuurt met 308 door naar met slash (`trailingSlash: true`) | Groen |
+| `/pagina.html` en `/pagina/index.html` | 308 naar de versie zonder slash (niet de canonieke) | 308 in één stap naar de versie met slash | Groen |
 | `/index.html` | 308 naar `/` | Ongewijzigd | Groen |
 | Canonical op elke pagina, absoluut, naar zichzelf | Aanwezig | Aanwezig; de 404-pagina heeft er geen | Groen |
 | Interne links in de canonieke vorm | Alle met slash | Ongewijzigd | Groen |
@@ -34,7 +34,7 @@ Keuze: de site is gebouwd met een slash aan het eind (canonicals, sitemap en all
 | Punt | Vóór | Na | Status |
 |---|---|---|---|
 | Niet-bestaand adres geeft 404 | 404 | 404 | Groen |
-| Eigen 404-pagina in huisstijl | Kale Vercel-melding | Eigen pagina met menu, vier diensten, snelkoppelingen en telefoonnummer (`dist/404.html`, noindex) | Groen op preview |
+| Eigen 404-pagina in huisstijl | Kale Vercel-melding | Eigen pagina met menu, vier diensten, snelkoppelingen en telefoonnummer (`dist/404.html`, noindex) | Groen |
 | Geen redirect-ketens | `http://www` gaat in twee stappen naar de apex (eerst https, dan apex) | Ongewijzigd; standaardgedrag van Vercel | Oranje, geaccepteerd |
 
 ### HTML-basis per pagina
@@ -77,7 +77,25 @@ Kanttekening bij caching: de bestanden in `/assets/` hebben geen versie of hash 
 
 Buiten de checklist van fase 1, maar een risico: de `AggregateRating` in de JSON-LD is verwijderd. Die markeerde de Google-reviews van Art of Advertising (5,0 uit 39) als eigen beoordeling van googleadvertising.nl. De zichtbare badge met de link naar de reviews staat er nog.
 
-## Na het samenvoegen meten op productie
+## Meting op productie
+
+Gemeten op 24-11-2026 op https://googleadvertising.nl, direct na de deploy van merge-commit `b78a4d6`, met de reeks hieronder.
+
+| Meting | Uitkomst |
+|---|---|
+| `/google-ads-kosten` | 308 naar `/google-ads-kosten/` |
+| `/google-ads-kosten.html` en `/google-ads-kosten/index.html` | 308 in één stap naar `/google-ads-kosten/` |
+| `/index.html` | 308 naar `/` |
+| `/kennisbank` | 308 naar `/kennisbank/` |
+| `/Google-Ads-Kosten/` | 404 |
+| `/niet-bestaand` | 308 naar `/niet-bestaand/`, daarna 404 met de eigen pagina "Pagina niet gevonden" (noindex, geen canonical) |
+| `www` en `http` | 308 naar `https://googleadvertising.nl/...` |
+| Headers op `/` | Alle vijf beveiligingsheaders aanwezig; geen `x-robots-tag` |
+| Sitemap | 42 adressen, alle 200 |
+| `robots.txt` | Nieuwe versie live |
+| Homepage | Deelafbeelding `og-google-ads-uitbesteden.jpg`, favicon van 32 pixels en `apple-touch-icon` aanwezig; geen `aggregateRating` meer in de markup |
+
+## Meetreeks (ook voor de maandelijkse controle)
 
 ```bash
 D=https://googleadvertising.nl
@@ -87,16 +105,16 @@ curl -sS "$D/sitemap.xml" | grep -o '<loc>[^<]*' | sed 's/<loc>//' | while read 
 curl -sS "$D/niet-bestaand/" | grep -o '<title>[^<]*'
 ```
 
-Verwacht: `/google-ads-kosten` en beide `.html`-varianten sturen in één stap door naar `/google-ads-kosten/`; `/niet-bestaand/` geeft 404 met de titel "Pagina niet gevonden"; geen `x-robots-tag` op productie; alle sitemap-adressen 200.
+Verwachte uitkomst: `/google-ads-kosten` en beide `.html`-varianten sturen in één stap door naar `/google-ads-kosten/`; `/niet-bestaand/` geeft 404 met de titel "Pagina niet gevonden"; geen `x-robots-tag` op productie; alle sitemap-adressen 200.
 
 ## Handmatige acties
 
-1. Bureau: de PR beoordelen en samenvoegen. Controle: de meting hierboven.
-2. Bureau: na het samenvoegen in Search Console de homepage en één dienstpagina inspecteren ("Indexering toegestaan"). Vereist fase 2.
+1. Gedaan op 24-11-2026: PR samengevoegd en op productie gemeten.
+2. Bureau: in Search Console de homepage en één dienstpagina inspecteren ("Indexering toegestaan"). Vereist fase 2.
 3. Bureau: beslissen over de titel van de homepage (67 tekens met merknaam, of korter).
 
 ## Definition of done
 
-- [ ] Alle regels groen op productie, gemeten na de deploy
-- [x] Sitemap-adressen geven allemaal 200 (gemeten vóór; opnieuw meten na de deploy)
-- [ ] Search Console meldt geen "uitgesloten door noindex" op pagina's die moeten ranken (kan pas na fase 2)
+- [x] Alle regels groen op productie, gemeten na de deploy (uitzonderingen: beschrijvingen naar fase 3, titel homepage 67 tekens, `security.txt` optioneel)
+- [x] Sitemap-adressen geven allemaal 200 (42 van 42, gemeten na de deploy)
+- [ ] Search Console meldt geen "uitgesloten door noindex" op pagina's die moeten ranken (property staat sinds 24-11-2026; het rapport Pagina's vult zich in de dagen daarna)
