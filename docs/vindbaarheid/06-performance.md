@@ -27,13 +27,13 @@ Toegankelijkheid, best practices en SEO zijn gelijk gebleven (96 / 100 / 100 op 
 - De vijf foto's op de homepage staan nu in een `<picture>` met AVIF en WebP in drie breedtes (480, 800 en 1200) en een `sizes` die klopt met de layout. De oorspronkelijke JPG (2000 breed) blijft de terugvaloptie voor oude browsers.
 - Grootste variant per foto: 23 tot 66 kB in AVIF, tegen 295 tot 620 kB als JPG.
 - Alle vijf staan buiten het eerste scherm en laden lui (`loading="lazy"`, `decoding="async"`). Het LCP-element van de homepage is tekst, dus er is geen afbeelding die voorrang nodig heeft.
-- In `build.mjs` maakt de helper `photo(naam, alt, sizes)` de markup; in de CSS staat `picture{display:contents}`, zodat de bestaande layoutregels blijven werken.
+- In `build.mjs` maakt de helper `photo(naam, alt, sizes)` de markup; in de CSS staat `picture{display:contents}` met `picture source{display:none}`, zodat de bestaande layoutregels blijven werken en de `source`-elementen geen lege flex-items worden.
 
 ### Fonts
 
-- Inter en Big Shoulders Display worden zelf gehost als variabele WOFF2 (`public/fonts/`, samen 84 kB, alleen de Latijnse tekenset) met `font-display: swap` en een `preload`.
+- Figtree (lopende tekst, variabel) en Bricolage Grotesque (koppen, gewicht 800 met variabele breedte) worden zelf gehost als WOFF2 (`public/fonts/`, samen 61 kB, alleen de Latijnse tekenset) met `font-display: swap` en een `preload`. Tot de merkstijl Raak waren dit Inter en Big Shoulders Display (samen 84 kB).
 - De externe stylesheet van Google Fonts is weg. Daarmee is er geen render-blokkerende externe bron meer en gaat er geen bezoekersverzoek meer naar Google.
-- De bestandsnamen bevatten de versie (`-v20`, `-v24`) en `/fonts/` wordt een jaar onveranderlijk gecachet.
+- De bestandsnamen bevatten de versie (`-v9`) en `/fonts/` wordt een jaar onveranderlijk gecachet.
 
 ## Conversiecommando voor nieuwe foto's
 
