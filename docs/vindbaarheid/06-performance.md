@@ -1,22 +1,22 @@
 # Fase 6: performance
 
-Datum: 24 november 2026. Status: wijzigingen staan in PR 2. "Vóór" is gemeten op productie; "na" is gemeten op de lokale build (`npx serve dist`). De fase is pas klaar als de meting op productie is herhaald; lokaal ontbreekt de netwerkafstand tot Vercel, dus de cijfers op productie kunnen iets hoger uitvallen.
+Datum: 24 november 2026. Status: live (PR 2, merge-commit `e716053`) en op productie gemeten. Open blijft alleen de velddata, die er pas is als de site genoeg bezoekers heeft. "Vóór" en "na" zijn allebei gemeten op https://googleadvertising.nl; de tussenmeting op de lokale build staat erbij ter vergelijking.
 
 ## Metingen
 
 Lighthouse 12, mobiel, gesimuleerde vertraging.
 
-| Pagina | Meting | Vóór (productie) | Na (lokale build) |
-|---|---|---|---|
-| `/` | Performance | 90 | 100 |
-| `/` | LCP | 3,6 s | 1,7 s |
-| `/` | FCP | 1,6 s | 0,8 s |
-| `/` | CLS | 0,041 | 0 |
-| `/` | Gewicht | 557 kB | 136 kB |
-| `/google-ads-beheer/` | Performance | 99 | 100 |
-| `/google-ads-beheer/` | LCP | 1,8 s | 1,6 s |
-| `/google-ads-beheer/` | FCP | 1,8 s | 0,8 s |
-| `/google-ads-beheer/` | CLS | 0,032 | 0 |
+| Pagina | Meting | Vóór (productie) | Lokale build | Na (productie) |
+|---|---|---|---|---|
+| `/` | Performance | 90 | 100 | 100 |
+| `/` | LCP | 3,6 s | 1,7 s | 1,2 s |
+| `/` | FCP | 1,6 s | 0,8 s | 0,9 s |
+| `/` | CLS | 0,041 | 0 | 0 |
+| `/` | Gewicht | 557 kB | 136 kB | 136 kB |
+| `/google-ads-beheer/` | Performance | 99 | 100 | 100 |
+| `/google-ads-beheer/` | LCP | 1,8 s | 1,6 s | 1,2 s |
+| `/google-ads-beheer/` | FCP | 1,8 s | 0,8 s | 0,8 s |
+| `/google-ads-beheer/` | CLS | 0,032 | 0 | 0 |
 
 Toegankelijkheid, best practices en SEO zijn gelijk gebleven (96 / 100 / 100 op de homepage, 100 / 100 / 100 op de dienstpagina).
 
@@ -63,14 +63,14 @@ Het script maakt van elke JPG in `public/assets` (behalve de deelafbeelding `og-
 
 ## Nog te doen
 
-1. Na het samenvoegen: Lighthouse mobiel op productie voor `/` en `/google-ads-beheer/`, en de waarden hierboven aanvullen.
+1. Gedaan op 24-11-2026: Lighthouse mobiel op productie (tabel hierboven). Ook gecontroleerd: fonts en AVIF-bestanden geven 200 met de juiste `content-type` en een jaar cache; geen verwijzing meer naar Google Fonts in de HTML.
 2. Zodra er genoeg bezoekers zijn: de velddata in PageSpeed Insights en het rapport Core Web Vitals in Search Console (na 28 dagen).
 3. Beslissen over de kleur van de labels "Stap 2" en "Stap 3".
 
 ## Definition of done
 
-- [ ] Lighthouse mobiel 90+ op de homepage en de zwaarste subpagina, gemeten op productie (lokaal: 100 en 100)
-- [ ] LCP onder 2,5 s in de simulatie, gemeten op productie (lokaal: 1,7 s)
+- [x] Lighthouse mobiel 90+ op de homepage en de zwaarste subpagina, gemeten op productie (100 en 100)
+- [x] LCP onder 2,5 s in de simulatie, gemeten op productie (1,2 s)
 - [x] Geen render-blokkerende externe bronnen
 - [x] Alle foto's in modern formaat met `srcset`
 - [ ] Search Console Core Web Vitals zonder "slechte URL's" (kan pas met velddata)
