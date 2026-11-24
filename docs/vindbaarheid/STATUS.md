@@ -14,7 +14,7 @@ Klant en bureau zijn hier dezelfde partij: googleadvertising.nl is een label van
 | 3 | Zoekwoorden en content | Open (eerste lijst staat in `zoekwoorden.md`) | 24-11-2026 | Volumes ophalen, beschrijvingen op lengte, regiopagina's eigen inhoud |
 | 4 | Structured data | Deels (live; vijf pagina's zonder fouten op validator.schema.org) | 24-11-2026 | Rich Results Test door het bureau; KvK-nummer invullen; beslissen over `sameAs`; rapport in Search Console bekijken zodra het gevuld is |
 | 5 | Lokale vindbaarheid | Open | | Beslissen: eigen Bedrijfsprofiel of onderdeel van dat van Art of Advertising |
-| 6 | Performance | Klaar op de simulatie (productie: Lighthouse mobiel 100 en 100, LCP 1,2 s); velddata volgt | 24-11-2026 | Core Web Vitals in Search Console bekijken zodra er velddata is; beslissen over het contrast van de labels "Stap 2" en "Stap 3" |
+| 6 | Performance | Klaar op de simulatie (productie na de merkstijl Raak: Lighthouse mobiel 100 en 100, LCP 1,2 s, toegankelijkheid 100); velddata volgt | 24-11-2026 | Core Web Vitals in Search Console bekijken zodra er velddata is |
 | 7 | Meting en consent | Open (er draait nog niets) | | Tag Manager-container, cookiebanner, conversies bellen en WhatsApp-aanvraag |
 | 8 | Autoriteit en links | Open | | Link vanaf artofadvertising.nl; aanmelden bij Trustoo, Sortlist, Semrush Agency Partners |
 | 9 | AI-vindbaarheid | Deels (`llms.txt` en AI-crawlers geregeld) | 24-11-2026 | Eerste meting met de drie vragen zodra de site in Bing staat |
@@ -54,6 +54,7 @@ Geen op productiepagina's die moeten ranken. Blijvend op noindex: `/aanvragen/be
 
 ## Logboek
 
+- 24-11-2026: PR 4 samengevoegd (merge-commit `f5e411d`), de merkstijl Raak staat live. Op productie gemeten: 42 van 42 sitemap-adressen 200; fonts en het nieuwe logo geven 200 met de juiste `content-type` en een jaar cache; Lighthouse mobiel 100 op alle vier de onderdelen voor de homepage (LCP 1,2 s, CLS 0, 117 kB) en `/google-ads-beheer/` (LCP 1,2 s, CLS 0, 89 kB). Nog te doen door het bureau: in Search Console indexering aanvragen voor de homepage.
 - 24-11-2026: merkstijl Raak als PR 4 aangeboden (wit, inkt en felroze-rood; Bricolage Grotesque en Figtree zelf gehost, samen 61 kB; teksten ongewijzigd). Checklist bij wijzigingen doorlopen tegen een build van `main`: titels, meta descriptions, H1's, H2's, canonicals, robots-meta, `sitemap.xml`, `llms.txt` en `robots.txt` gelijk; structured data gelijk op het logo-adres na (nieuw bestand `logo-googleadvertising-raak-512.png`). Lighthouse mobiel lokaal: 100 op alle vier de onderdelen voor de homepage (LCP 1,5 s, CLS 0, 117 kB) en `/google-ads-beheer/` (LCP 1,4 s, CLS 0, 89 kB). Na samenvoegen: Lighthouse op productie herhalen en in Search Console indexering aanvragen voor de homepage.
 - 24-11-2026: HTTPS hersteld. Twee AAAA-records bij mijndomein verwijderd en een CNAME voor `www` naar Vercel toegevoegd; Vercel gaf daarna de certificaten uit. Op `_dmarc` staat nog een CNAME naar Vercel die daar niet hoort; verwijderen of vervangen door een echte DMARC-regel.
 - 24-11-2026: fase 0 uitgevoerd, fase 1 als PR aangeboden.
