@@ -1,11 +1,10 @@
 # robots.txt voor https://googleadvertising.nl
-# Alles is openbaar, behalve de bedankpagina en interne zoek- en filter-URL's.
+# Alles is openbaar. De bedankpagina staat op noindex in de pagina zelf; die mag hier
+# niet geblokkeerd worden, anders kan een zoekmachine de noindex niet lezen.
 
 User-agent: *
 Allow: /
-Disallow: /aanvragen/bedankt/
 Disallow: /*?s=
-Disallow: /*?utm_
 
 # Zoekmachines
 User-agent: Googlebot
