@@ -1,12 +1,13 @@
 // Bouwt de statische site in ./dist. Geen dependencies: `node build.mjs`.
 import { mkdirSync, writeFileSync, rmSync, cpSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { site, spokes, articles, cities } from './content.mjs';
+import { site, spokes, articles, cities, cases } from './content.mjs';
 
 const OUT = 'dist';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
 const bySlug = Object.fromEntries(spokes.map((s) => [s.slug, s]));
+const byCaseSlug = Object.fromEntries(cases.map((c) => [c.slug, c]));
 const pages = [];
 rmSync(OUT, { recursive: true, force: true });
 
@@ -14,8 +15,10 @@ const check = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24
 const arrow = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
 const mark = '<span class="logo-mark"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg></span>';
 const logo = `<a class="logo" href="/" aria-label="googleadvertising.nl, naar home">${mark}<span>googleadvertising<small>.nl</small></span></a>`;
-const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner</span></div>`;
+const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner<br><a href="${site.reviews.url}" target="_blank" rel="noopener">★ ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></span></div>`;
 const list = (items) => `<ul class="checks col">${items.map((i) => `<li>${check}<span>${esc(i)}</span></li>`).join('')}</ul>`;
+const evidenceTag = (r) => `<span class="tag">${r.evidence === 'gemeten' ? 'Gemeten' : 'Waargenomen'} — ${esc(r.scope)}</span>`;
+const byline = () => `<p class="small">Door <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${esc(site.specialist.name)}</a>, ${esc(site.specialist.role)} — bijgewerkt op ${new Date(site.updated).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</p>`;
 
 const org = {
   '@type': 'ProfessionalService', '@id': `${site.url}/#organisatie`, name: site.name, url: site.url,
@@ -24,6 +27,7 @@ const org = {
   address: { '@type': 'PostalAddress', streetAddress: site.street, postalCode: site.zip, addressLocality: site.city, addressCountry: 'NL' },
   parentOrganization: { '@type': 'Organization', name: site.company, url: site.companyUrl },
   image: `${site.url}/assets/google-ads-specialist-in-overleg-met-klant.jpg`,
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: site.reviews.score.replace(',', '.'), reviewCount: site.reviews.count },
 };
 const faqLd = (faq) => ({ '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
 const crumbLd = (trail) => ({ '@type': 'BreadcrumbList', itemListElement: trail.map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, item: site.url + path })) });
@@ -42,7 +46,7 @@ function footer() {
   const d = spokes.filter((s) => s.group === 'dienst').map((s) => [s.name, `/${s.slug}/`]);
   const w = spokes.filter((s) => s.group === 'voor').map((s) => [s.name, `/${s.slug}/`]);
   const r = cities.map(([c]) => [c, `/google-ads-specialist-${slugify(c)}/`]);
-  const k = [['Google Ads uitbesteden', '/'], ['Kennisbank', '/kennisbank/'], ...articles.slice(0, 4).map((a) => [a.name, `/kennisbank/${a.slug}/`]), ['Voorstel aanvragen', '/aanvragen/']];
+  const k = [['Google Ads uitbesteden', '/'], ['Klantcases', '/klantcases/'], ['Kennisbank', '/kennisbank/'], ...articles.slice(0, 4).map((a) => [a.name, `/kennisbank/${a.slug}/`]), ['Voorstel aanvragen', '/aanvragen/']];
   return `<footer class="site-footer"><div class="wrap">
 <div class="f-top">
 <div class="f-brand">${logo}<p>Google Ads uitbesteden aan een vaste specialist. Voor bedrijven in heel Nederland die meer uit hun advertentiebudget willen halen.</p>${badge}</div>
@@ -81,7 +85,7 @@ ${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robo
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">${graph}</script>
 </head>
@@ -119,6 +123,7 @@ for (const s of spokes) {
 </div></section>
 ${s.spec ? `<section class="section alt"><div class="wrap split"><div class="side"><p class="kicker">In het kort</p><h2>De feiten op een rij.</h2><div><a class="btn" href="/aanvragen/">Voorstel aanvragen</a></div></div><dl class="spec main" style="gap:0">${s.spec.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></div></section>` : ''}
 <section class="section${s.spec ? '' : ' alt'}"><div class="wrap"><div class="prose narrow">${s.secs.map(([h, ps]) => `<h2>${esc(h)}</h2>${ps.map((p) => `<p>${esc(p)}</p>`).join('')}`).join('')}</div></div></section>
+<section class="section${s.spec ? ' alt' : ''}"><div class="wrap">${band(`Benieuwd wat ${s.name.toLowerCase().startsWith('google') ? s.name.toLowerCase() : 'dit'} voor jouw bedrijf kan betekenen?`)}</div></section>
 ${faqBlock(`Vragen over ${s.name.charAt(0).toLowerCase() === 'g' ? s.name : s.name.toLowerCase()}.`, s.faq)}
 <section class="section alt"><div class="wrap stack gap-lg"><h2>Ook interessant</h2>${related(s.rel)}${band('Benieuwd wat er nog in je Google Ads zit?')}</div></section>`;
   page({ path, title: `${s.title} | googleadvertising.nl`, desc: s.desc, body, ld: [crumbLd(trail), faqLd(s.faq), { '@type': 'Service', name: s.name, serviceType: s.name, description: s.def, provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, url: site.url + path }] });
@@ -128,8 +133,9 @@ ${faqBlock(`Vragen over ${s.name.charAt(0).toLowerCase() === 'g' ? s.name : s.na
 for (const a of articles) {
   const path = `/kennisbank/${a.slug}/`;
   const trail = [['Home', '/'], ['Kennisbank', '/kennisbank/'], [a.name, path]];
-  const body = `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><h1>${esc(a.h1)}</h1><div class="answer"><p class="kicker">Kort antwoord</p><p>${esc(a.answer)}</p></div><p class="small">Bijgewerkt op ${new Date(site.updated).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })} door het team van googleadvertising.nl</p></div></div></section>
+  const body = `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><h1>${esc(a.h1)}</h1><div class="answer"><p class="kicker">Kort antwoord</p><p>${esc(a.answer)}</p></div>${byline()}</div></div></section>
 <section class="section"><div class="wrap"><div class="prose narrow">${a.secs.map(([h, ps]) => `<h2>${esc(h)}</h2>${ps.map((p) => `<p>${esc(p)}</p>`).join('')}`).join('')}</div></div></section>
+<section class="section alt"><div class="wrap">${band('Liever dat een specialist dit voor je uitzoekt?')}</div></section>
 ${faqBlock('Veelgestelde vragen', a.faq)}
 <section class="section alt"><div class="wrap stack gap-lg"><h2>Verder lezen</h2>${related(a.rel)}${band('Liever dat een specialist meekijkt?')}</div></section>`;
   page({ path, title: `${a.title} | googleadvertising.nl`, desc: a.desc, body, ld: [crumbLd(trail), faqLd(a.faq), { '@type': 'Article', headline: a.h1, description: a.desc, datePublished: site.updated, dateModified: site.updated, inLanguage: 'nl', author: { '@id': `${site.url}/#organisatie` }, publisher: { '@id': `${site.url}/#organisatie` }, mainEntityOfPage: site.url + path }] });
@@ -140,6 +146,35 @@ ${faqBlock('Veelgestelde vragen', a.faq)}
 <section class="section"><div class="wrap"><div class="grid g3">${articles.map((a) => `<a class="card" href="/kennisbank/${a.slug}/"><h3>${esc(a.h1)}</h3><p>${esc(a.answer.split('. ')[0])}.</p></a>`).join('')}</div></div></section>
 <section class="section alt"><div class="wrap">${band('Meer uit je Google Ads halen?')}</div></section>`;
   page({ path: '/kennisbank/', title: 'Kennisbank Google Ads: antwoorden op veelgestelde vragen | googleadvertising.nl', desc: 'Antwoorden op veelgestelde vragen over Google Ads: zelf doen of uitbesteden, kosten per klik, Performance Max, meting en begrippen.', body, ld: [crumbLd(trail)] });
+}
+
+// ---------- klantcases ----------
+for (const c of cases) {
+  const path = `/klantcases/${c.slug}/`;
+  const trail = [['Home', '/'], ['Klantcases', '/klantcases/'], [c.name, path]];
+  const others = cases.filter((o) => o.slug !== c.slug);
+  const body = `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><p class="kicker">Klantcase · ${esc(c.sector)}</p><h1>${esc(c.title)}</h1><p class="lead">${esc(c.intro)}</p><div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div></div></div></section>
+<section class="facts" aria-label="Kerngegevens"><dl class="wrap">
+<div><dt>Sector</dt><dd>${esc(c.sector)}</dd></div><div><dt>Regio</dt><dd>${esc(c.regio)}</dd></div><div><dt>Kanalen</dt><dd style="font-size:17px">${esc(c.kanalen.join(', '))}</dd></div>
+</dl></section>
+<section class="section"><div class="wrap"><div class="prose narrow"><p class="first">${esc(c.situatie)}</p></div></div></section>
+<section class="section alt"><div class="wrap stack gap-lg"><div class="stack narrow"><p class="kicker">Aanpak</p><h2>Hoe we het aanpakten.</h2></div>
+<div class="grid g3">${c.aanpak.map(([h, p], i) => `<div class="card"><span class="step-no">Stap ${i + 1}</span><h3>${esc(h)}</h3><p>${esc(p)}</p></div>`).join('')}</div>
+</div></section>
+<section class="section"><div class="wrap stack gap-lg"><div class="stack narrow"><p class="kicker">Resultaten</p><h2>Wat het opleverde.</h2></div>
+<div class="grid g3">${c.resultaten.map((r) => `<article class="card">${evidenceTag(r)}<h3 class="stat">${esc(r.label)}</h3><p>${esc(r.detail)}</p></article>`).join('')}</div>
+<p class="small">Bron: <a href="${c.bron}" target="_blank" rel="noopener">het projectoverzicht van Art of Advertising</a>.</p>
+</div></section>
+${c.testimonial ? `<section class="section alt"><div class="wrap"><div class="answer"><p class="kicker">In hun woorden</p><p>“${esc(c.testimonial.quote)}”</p><p class="small">${esc(c.testimonial.naam)}, ${esc(c.testimonial.functie)}</p></div></div></section>` : ''}
+<section class="section${c.testimonial ? '' : ' alt'}"><div class="wrap stack gap-lg"><h2>Meer klantcases</h2><div class="grid g3">${others.map((o) => `<a class="card" href="/klantcases/${o.slug}/"><h3>${esc(o.name)}</h3><p>${esc(o.resultaten[0].label)}</p></a>`).join('')}</div>${band('Benieuwd wat dit voor jouw Google Ads kan betekenen?')}</div></section>`;
+  page({ path, title: `${c.title} | googleadvertising.nl`, desc: c.desc, body, ld: [crumbLd(trail), { '@type': 'Article', headline: c.title, description: c.desc, datePublished: site.updated, dateModified: site.updated, inLanguage: 'nl', author: { '@id': `${site.url}/#organisatie` }, publisher: { '@id': `${site.url}/#organisatie` }, mainEntityOfPage: site.url + path }] });
+}
+{
+  const trail = [['Home', '/'], ['Klantcases', '/klantcases/']];
+  const body = `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><h1>Klantcases</h1><p class="lead">Echte klanten, echte cijfers. Per case duidelijk of een resultaat gemeten is of waargenomen, en op welk kanaal het slaat.</p></div></div></section>
+<section class="section"><div class="wrap"><div class="grid g3">${cases.map((c) => `<a class="card" href="/klantcases/${c.slug}/"><p class="tag">${esc(c.sector)}</p><h3>${esc(c.name)}</h3><p>${esc(c.resultaten[0].label)}</p></a>`).join('')}</div></div></section>
+<section class="section alt"><div class="wrap">${band('Benieuwd wat dit voor jouw Google Ads kan betekenen?')}</div></section>`;
+  page({ path: '/klantcases/', title: 'Klantcases Google Ads: echte resultaten | googleadvertising.nl', desc: 'Echte klantcases van googleadvertising.nl: welke resultaten Google Ads opleverde, per klant met cijfers en of die gemeten of waargenomen zijn.', body, ld: [crumbLd(trail)] });
 }
 
 // ---------- regiopagina's ----------
@@ -159,6 +194,7 @@ for (const [c, near] of cities) {
 <div class="card"><h3>Werkgebied rond ${c}</h3><p style="font-size:16px">We stellen je campagnes in op de plaatsen waar je klanten zitten, bijvoorbeeld:</p>${list([c, ...near])}</div></div>
 </div></section>
 <section class="section alt"><div class="wrap split"><div class="side"><p class="kicker">In het kort</p><h2>De feiten op een rij.</h2></div><dl class="spec main" style="gap:0">${[['Prijs', 'Vanaf € 199 per maand'], ['Inbegrepen', 'Google Tag Manager'], ['Minimumbudget', 'Geen'], ['Opzeggen', 'Per maand'], ['Reactie op je aanvraag', 'Binnen 1 dag']].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div></section>
+<section class="section"><div class="wrap">${band(`Wil je weten wat een vaste specialist voor jouw bedrijf in ${c} kan betekenen?`)}</div></section>
 ${faqBlock(`Vragen over een Google Ads specialist in ${c}.`, faq)}
 <section class="section alt"><div class="wrap stack gap-lg"><h2>Ook interessant</h2>${related(['google-ads-specialist', 'google-ads-audit', 'google-ads-kosten', 'google-ads-voor-lokale-dienstverleners'])}
 <nav class="chips" aria-label="Andere regio's">${cities.filter(([x]) => x !== c).map(([x]) => `<a href="/google-ads-specialist-${slugify(x)}/">Google Ads specialist ${x}</a>`).join('')}</nav>
@@ -193,7 +229,8 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
 <div class="hero-text"><p class="kicker">Google Ads uitbesteden</p>
 <h1>Google Ads uitbesteden en meer halen uit hetzelfde budget.</h1>
 <p class="lead">Voor bedrijven in heel Nederland die al adverteren en weten dat er meer in zit. Een vaste Google Ads specialist neemt je account over, stopt wat geld kost en bouwt uit wat klanten oplevert.</p>
-<div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div>
+<div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="btn btn-lg btn-outline" href="/aanvragen/?keuze=audit">Gratis accountcheck</a></div>
+<p class="small">Geen lange contracten: je kunt elke maand stoppen. Of <a href="tel:${site.phoneHref}">bel ${site.phone}</a>.</p>
 <ul class="checks"><li>${check}<span>Het account blijft van jou</span></li><li>${check}<span>Eén vast aanspreekpunt</span></li><li>${check}<span>Wekelijks geoptimaliseerd</span></li><li>${check}<span>Maandelijks opzegbaar</span></li></ul>
 ${badge}</div>
 <div class="hero-card"><div><p class="title">Wat wil je uitbesteden?</p><p class="muted" style="font-size:15px">Kies waar je mee wilt starten. Je aanvraag staat in drie stappen klaar.</p></div>
@@ -210,7 +247,7 @@ ${badge}</div>
 </dl></section>
 
 <section class="section" id="uitbesteden"><div class="wrap split">
-<div class="side"><img class="photo" style="aspect-ratio:4/3;object-position:60% 50%" src="/assets/google-ads-specialist-in-overleg-met-klant.jpg" alt="Google Ads specialist bespreekt de resultaten met een klant aan tafel" width="1600" height="1066"></div>
+<div class="side"><img class="photo" style="aspect-ratio:4/3;object-position:45% 25%" src="/assets/google-ads-specialist-in-overleg-met-klant.jpg" alt="Google Ads specialist bespreekt de resultaten met een klant aan tafel" width="2000" height="1333"></div>
 <div class="main prose"><p class="kicker">In het kort</p><h2 style="margin-top:0">Wat is Google Ads uitbesteden?</h2>
 <p class="first">Google Ads uitbesteden betekent dat een specialist je advertentiecampagnes in Google opzet, beheert en verbetert, terwijl jij eigenaar blijft van het account en het budget.</p>
 <p>Je betaalt het advertentiebudget rechtstreeks aan Google en een vaste beheerfee aan het bureau. De specialist kiest de zoekwoorden, schrijft de advertenties, sluit irrelevante zoekopdrachten uit en stuurt de biedingen bij op basis van wat er werkelijk binnenkomt.</p>
@@ -219,7 +256,7 @@ ${badge}</div>
 
 <section class="section alt" id="werkwijze"><div class="wrap stack gap-lg">
 <div class="head-row"><div class="stack"><p class="kicker">Werkwijze</p><h2>Van aanvraag naar draaiende campagnes in drie stappen.</h2></div>
-<img class="photo" style="object-position:30% 30%" src="/assets/google-ads-specialist-legt-aanpak-uit.jpg" alt="Google Ads specialist legt de aanpak uit op kantoor" width="1800" height="1200" loading="lazy"></div>
+<img class="photo" style="aspect-ratio:3/2;object-position:50% 40%" src="/assets/google-ads-specialist-legt-aanpak-uit.jpg" alt="Google Ads specialist legt de aanpak uit op kantoor" width="2000" height="1333" loading="lazy"></div>
 <ol class="steps grid g3">
 <li class="card"><span class="step-no">Stap 1</span><h3>Intake en accountcheck.</h3><p>We lopen je huidige account door: waar lekt budget weg, welke campagnes leveren klanten op en wat is een realistisch doel. Mkb-bedrijven kunnen na de intake direct aansluiten.</p></li>
 <li class="card"><span class="step-no">Stap 2</span><h3>Opzet en meting.</h3><p>Campagnestructuur, zoekwoorden, advertenties en uitsluitingen. De conversiemeting koppelen we aan je formulieren, telefoon en waar mogelijk je CRM.</p></li>
@@ -234,7 +271,7 @@ ${badge}</div>
 
 <section class="section alt" id="kosten"><div class="wrap split">
 <div class="side"><p class="kicker">Kosten</p><h2>Wat kost Google Ads uitbesteden?</h2><p class="muted" style="font-size:18px">Je betaalt twee dingen: het advertentiebudget aan Google en een beheerfee aan ons. Er is geen minimumbudget en opzeggen kan per maand. Mkb-bedrijven kunnen na een intake direct aansluiten.</p><div><a class="link-strong" href="/google-ads-kosten/">Lees alles over Google Ads kosten</a></div>
-<img class="photo" style="aspect-ratio:1/1;object-position:50% 100%" src="/assets/google-ads-team-aan-het-werk.jpg" alt="Het Google Ads team aan het werk op kantoor" width="1200" height="1800" loading="lazy"></div>
+<img class="photo" style="aspect-ratio:3/2;object-position:50% 35%" src="/assets/google-ads-team-aan-het-werk.jpg" alt="Het Google Ads team aan het werk op kantoor" width="2000" height="1333" loading="lazy"></div>
 <div class="main"><div class="table-box"><table><thead><tr><th scope="col">Onderdeel</th><th scope="col">Je betaalt aan</th><th scope="col">Bedrag</th></tr></thead><tbody>
 <tr><th scope="row">Advertentiebudget</th><td>Google</td><td>Bepaal je zelf, er is geen minimum</td></tr>
 <tr><th scope="row">Maandelijks beheer</th><td>googleadvertising.nl</td><td>Vanaf € 199 per maand, inclusief Tag Manager</td></tr>
@@ -257,10 +294,16 @@ ${badge}</div>
 <section class="section dark" id="resultaten"><div class="wrap stack gap-lg">
 <div class="stack narrow"><p class="kicker">Resultaten</p><h2>Wat Google Ads uitbesteden opleverde voor onze klanten.</h2></div>
 <div class="grid g3">
-<article class="card"><p class="who">Mitsubishi Forklift Trucks</p><h3 class="stat">80% lager</h3><p>De kosten per acquisitie daalden met 80 procent.</p></article>
-<article class="card"><p class="who">PromoBee</p><h3 class="stat">Bovenaan</h3><p>Zichtbaar op de eerste positie bij zakelijke zoekers.</p></article>
-<article class="card"><p class="who">Allround Hekwerk</p><h3 class="stat">Inzicht</h3><p>Per campagne helder wat die aan aanvragen oplevert.</p></article>
-</div></div></section>
+${cases.map((c) => { const r = c.resultaten[0]; return `<a class="card" href="/klantcases/${c.slug}/"><p class="who">${esc(c.name)}</p><h3 class="stat">${esc(r.label)}</h3><p>${esc(r.detail)}</p>${evidenceTag(r)}</a>`; }).join('')}
+</div><div><a class="link-strong" href="/klantcases/">Bekijk alle klantcases</a></div></div></section>
+
+<section class="section" id="kantoor"><div class="wrap split">
+<div class="side"><img class="photo" style="aspect-ratio:3/2;object-position:50% 55%" src="/assets/kantoor-google-ads-bureau.jpg" alt="Kantoor van googleadvertising.nl aan de Coehoornsingel in Groningen" width="2000" height="1333" loading="lazy"></div>
+<div class="main prose"><p class="kicker">Ons kantoor</p><h2 style="margin-top:0">Een vast team in Groningen, voor klanten door heel Nederland.</h2>
+<p class="first">Googleadvertising.nl is een label van <a href="${site.companyUrl}">Art of Advertising</a>, aan de ${site.street} in ${site.city}. Daar werkt het team dat je account inricht, wekelijks bijstuurt en elke maand met je doorneemt wat er is veranderd.</p>
+<p>De meeste klanten doen de intake en het maandoverleg gewoon online. Zit je in de buurt, dan ben je ook welkom op kantoor voor een kop koffie en een blik in je account.</p>
+<div><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div></div>
+</div></section>
 
 <section class="section" id="meer"><div class="wrap stack gap-lg">
 <div class="split"><div class="side"><h2>Google Ads uitbesteden, laten beheren of laten opzetten door een specialist.</h2></div>
@@ -275,7 +318,7 @@ ${lb('Google Ads specialist per regio', 'Regio', cities.map(([c]) => [c, `/googl
 <div class="alt">${faqBlock('Alles wat je wilt weten voor je Google Ads uitbesteedt.', homeFaq)}</div>
 
 <section class="section" id="contact"><div class="wrap"><div class="band">
-<img src="/assets/google-ads-specialist-aan-de-telefoon.jpg" alt="Google Ads specialist aan de telefoon op kantoor" width="1100" height="1370" loading="lazy">
+<img src="/assets/google-ads-specialist-aan-de-telefoon.jpg" alt="Google Ads specialist aan de telefoon op kantoor" style="object-position:30% 35%" width="2000" height="1333" loading="lazy">
 <div class="txt"><h2>Klaar om meer uit je Google Ads te halen?</h2><p class="muted" style="font-size:18px">Vraag een voorstel aan of laat eerst je account checken. Je krijgt antwoord van de specialist die ook je campagnes gaat beheren.</p></div>
 <div class="act"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div>
 </div></div></section>`;
@@ -350,6 +393,11 @@ ${spokes.filter((s) => s.group === 'voor').map((s) => L(s.name, `/${s.slug}/`, s
 ## Kennisbank
 
 ${articles.map((a) => L(a.name, `/kennisbank/${a.slug}/`, a.answer)).join('\n')}
+
+## Klantcases
+
+${L('Klantcases', '/klantcases/', 'overzicht van klantcases met gemeten en waargenomen resultaten')}
+${cases.map((c) => L(c.name, `/klantcases/${c.slug}/`, c.resultaten[0].label)).join('\n')}
 
 ## Optional
 

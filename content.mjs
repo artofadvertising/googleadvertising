@@ -12,7 +12,9 @@ export const site = {
   companyUrl: 'https://artofadvertising.nl',
   whatsapp: '31502113612', // WhatsApp-nummer voor aanvragen, internationaal zonder + of spaties, bijv. 31612345678
   kvk: '', // vul het KvK-nummer in, dan verschijnt het in de footer
-  updated: '2026-11-23',
+  updated: '2026-11-24',
+  reviews: { score: '5,0', count: 39, url: 'https://www.google.com/maps/search/Art+of+Advertising+Groningen' },
+  specialist: { name: 'Dirk Schaafsma', role: 'eigenaar van Art of Advertising en Google Ads-specialist', linkedin: 'https://www.linkedin.com/in/dirk-schaafsma-aaa498136' },
 };
 
 export const spokes = [
@@ -371,6 +373,66 @@ export const spokes = [
   },
 ];
 
+export const cases = [
+  {
+    slug: 'mitsubishi-forklift-trucks', name: 'Mitsubishi Forklift Trucks',
+    title: 'Mitsubishi Forklift Trucks: 80% lagere kosten per aanvraag via Google Ads',
+    desc: 'Hoe Mitsubishi Forklift Trucks de kosten per acquisitie met 80% verlaagde en meer productaanvragen kreeg via Google Ads.',
+    sector: 'Intern transport (heftrucks en magazijnoplossingen)', regio: 'Almere',
+    kanalen: ['Google Ads', 'Meta', 'SEO', 'Google Tag Manager', 'server-side tracking'],
+    intro: 'Een gevestigde naam in heftrucks en magazijnoplossingen, maar online kwamen te weinig aanvragen binnen.',
+    situatie: 'Mitsubishi Forklift Trucks is al jarenlang een gevestigde naam in intern transport, met een uitgebreid aanbod heftrucks en magazijnoplossingen voor sectoren als logistiek en industrie. Ondanks die sterke marktpositie bleven de online aanvragen via de website beperkt: veel potentiële klanten kwamen simpelweg niet in aanraking met het aanbod.',
+    aanpak: [
+      ['Scherpere targeting in Google Ads', 'Campagnes en zoekwoorden zijn gericht op bedrijven die actief op zoek zijn naar een heftruck of magazijnoplossing, met uitsluiting van zoektermen die geen koopintentie hebben.'],
+      ['Betrouwbare meting', 'Alle tracking is ingesteld met Google Tag Manager en server-side tracking, zodat elke aanvraag betrouwbaar wordt gemeten en precies te zien is uit welk kanaal en welke campagne hij komt.'],
+      ['Continue optimalisatie en samenwerking met sales', 'Campagnes zijn doorlopend bijgestuurd op basis van welke aanvragen echt tot een offerte leidden, in nauwe afstemming met het salesteam van Mitsubishi.'],
+    ],
+    resultaten: [
+      { label: '80% lagere kosten per acquisitie', evidence: 'gemeten', scope: 'Google Ads', detail: 'Door scherpere targeting, betere advertenties en continue optimalisatie van de Google Ads-campagnes.' },
+      { label: '+122% meer productaanvragen', evidence: 'gemeten', scope: 'volledige marketingmix: Google Ads, Meta en SEO', detail: 'Het aantal productaanvragen steeg explosief; Mitsubishi haalt nu structureel meer leads binnen via de website.' },
+      { label: '+79% meer websiteverkeer', evidence: 'gemeten', scope: 'volledige marketingmix', detail: 'Meer bezoekers zorgden voor meer zichtbaarheid en een grotere stroom aan potentiële klanten.' },
+    ],
+    testimonial: { quote: 'Betrokken en betrouwbare partner voor onze B2B-marketing die echt met je meedenkt. Ze leveren een goed onderbouwde strategie die in de praktijk zijn vruchten afwerpt.', naam: 'Bianca Kuiper', functie: 'Marketing manager, Mitsubishi Forklift Trucks' },
+    bron: 'https://artofadvertising.nl/projecten/mitsubishi-forklift-trucks',
+  },
+  {
+    slug: 'promobee', name: 'PromoBee',
+    title: 'PromoBee: bovenaan bij zakelijke zoekers met Google Ads',
+    desc: 'Hoe PromoBee, een B2B-webshop voor relatiegeschenken, met Google Ads bovenaan komt bij zakelijke zoekers.',
+    sector: 'Promotieartikelen en relatiegeschenken', regio: 'Nederland (landelijk)',
+    kanalen: ['Google Ads', 'LinkedIn', 'SEO', 'Google Tag Manager', 'server-side tracking'],
+    intro: 'Een B2B-webshop voor relatiegeschenken en promotieartikelen die zakelijke klanten wil bereiken op het moment dat ze zoeken.',
+    situatie: 'PromoBee is een B2B-webshop voor relatiegeschenken en promotieartikelen met logo. Bedrijven kiezen uit ruim 4.000 artikelen, bestellen vanaf 25 tot 25.000 stuks en krijgen vooraf een gratis digitale proefdruk. Om te groeien moest PromoBee zichtbaar zijn op het moment dat zakelijke inkopers naar promotieartikelen zoeken.',
+    aanpak: [
+      ['Campagnes gericht op zakelijke zoekers', 'Advertenties zijn ingericht op zoekwoorden en doelgroepen die aansluiten bij zakelijke inkoop van promotieartikelen, met een offerte-funnel die is doorgemeten tot en met de aanvraag.'],
+      ['Betrouwbare meting van aanvragen', 'Met Google Tag Manager en server-side tracking is elke aanvraag terug te voeren op het kanaal en de campagne waar hij vandaan komt.'],
+    ],
+    resultaten: [
+      { label: 'Bovenaan bij zakelijke zoekers', evidence: 'waargenomen', scope: 'Google Ads', detail: 'PromoBee verschijnt op de eerste positie bij relevante zakelijke zoekopdrachten naar promotieartikelen en relatiegeschenken.' },
+    ],
+    testimonial: null,
+    bron: 'https://artofadvertising.nl/projecten/promobee',
+  },
+  {
+    slug: 'allround-hekwerk', name: 'Allround Hekwerk',
+    title: 'Allround Hekwerk: inzicht in wat elke Google Ads-campagne oplevert',
+    desc: 'Hoe Allround Hekwerk met Google Ads en dashboards precies ziet welke campagne aanvragen oplevert.',
+    sector: 'Hekwerk en afrastering', regio: 'Nederland (landelijk)',
+    kanalen: ['Google Ads', 'SEO', 'Linkbuilding', 'Google Tag Manager', 'server-side tracking'],
+    intro: 'Specialist in hekwerk en afrastering die wilde weten wat elke marketingeuro precies oplevert.',
+    situatie: 'Allround Hekwerk is specialist in hekwerk en afrastering. De uitdaging zat niet alleen in meer gevonden worden, maar vooral in het zichtbaar maken van wat elke campagne daadwerkelijk aan aanvragen opleverde.',
+    aanpak: [
+      ['Google Ads naast content en linkbuilding', 'Naast zoekcampagnes op hekwerk-gerelateerde zoektermen is ingezet op content en linkbuilding, zodat Allround Hekwerk ook organisch beter gevonden wordt.'],
+      ['Dashboards per campagne', 'Met Google Tag Manager en server-side tracking is alles betrouwbaar gemeten, zodat elke aanvraag terug te voeren is op het kanaal waar hij vandaan komt.'],
+    ],
+    resultaten: [
+      { label: 'Helder inzicht per campagne', evidence: 'waargenomen', scope: 'Google Ads en SEO', detail: 'Dashboards laten per campagne zien wat die aan aanvragen oplevert, zodat budget naar wat werkt kan verschuiven.' },
+    ],
+    testimonial: null,
+    bron: 'https://artofadvertising.nl/projecten/allround-hekwerk',
+  },
+];
+
 export const articles = [
   {
     slug: 'google-ads-zelf-doen-of-uitbesteden', name: 'Google Ads zelf doen of uitbesteden',
@@ -490,6 +552,45 @@ export const articles = [
       ['Welk cijfer is het belangrijkst?', 'De kosten per aanvraag of order (CPA), of bij webshops de ROAS. Klikken en vertoningen zeggen weinig zonder die cijfers.'],
     ],
     rel: ['google-ads-kosten', 'conversietracking-google-ads', 'google-ads-specialist'],
+  },
+  {
+    slug: 'beste-google-ads-bureaus-nederland', name: 'Beste Google Ads bureaus Nederland',
+    title: 'Beste Google Ads bureaus in Nederland: een eerlijke vergelijking',
+    desc: 'Een eerlijke vergelijking van Google Ads bureaus in Nederland: prijsniveau, specialisatie en voor wie elk bureau het best past, inclusief onszelf.',
+    h1: 'Beste Google Ads bureaus in Nederland',
+    answer: 'Er is niet één beste Google Ads bureau: het verschilt in prijsniveau, specialisatie en wie het werk doet. Hieronder een eerlijk overzicht van bureaus die opvallen in Nederland, inclusief waar googleadvertising.nl in past.',
+    secs: [
+      ['Hoe we deze lijst maakten', ["Dit is onze eigen beoordeling, gebaseerd op openbare informatie van de websites van deze bureaus: prijsvermeldingen, dienstenaanbod en positionering. We hebben geen betaalde vermeldingen en nemen onszelf bewust mee, net als prijs en aanpak eerlijk te vergelijken. Zie je een fout of ben je het ergens mee oneens? Laat het ons weten via het contactformulier, dan passen we het aan.", 'Bijgewerkt op ' + new Date('2026-11-24').toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }) + '.']],
+      ['Searchlab', ['Searchlab (Amsterdam) is op dit moment het breedst zichtbare Google Ads bureau in Nederland, met eigen pagina\'s voor bijna elke stad en een uitgebreide kennisbank. Beheer begint bij Searchlab vanaf ongeveer € 1.500 per maand in vaste staffels. Sterk in: contentdiepte en transparantie over wat gemeten is. Past bij bedrijven met een groter budget die veel waarde hechten aan uitgebreide rapportage.']],
+      ['iClicks', ['iClicks (Lelystad) is een breder full-service bureau (SEO, advertising, webdevelopment) met een sterk track record aan klantcases en beoordelingen. Prijzen zijn op aanvraag. Past bij bedrijven die naast Google Ads ook andere kanalen willen uitbesteden aan één partij.']],
+      ['Adworth', ['Adworth (Amsterdam) is een kleiner, persoonsgericht bureau waarbij de eigenaar zelf in de accounts werkt, met een bewust laag aantal klanten per specialist. Past bij bedrijven die liever met één vaste, ervaren persoon werken dan met een groter team.']],
+      ['Stramark en SalesWizard', ['Stramark (Amsterdam) en SalesWizard (Arnhem) zijn allebei bureaus die Google Ads als onderdeel van een breder online-marketingpakket aanbieden, met persoonlijk contact als uitgangspunt. Prijzen zijn grotendeels op aanvraag.']],
+      ['River Digital', ['River Digital (Dordrecht) is een regionaal bureau met een echte lokale klantbasis in Zuid-Holland. Past goed bij bedrijven die een bureau in de buurt willen, met persoonlijk contact met de eigenaar.']],
+      ['Waar googleadvertising.nl in past', ['Googleadvertising.nl (onderdeel van Art of Advertising, Groningen) onderscheidt zich vooral op prijs: beheer vanaf € 199 per maand, inclusief Google Tag Manager, geen minimumbudget en maandelijks opzegbaar. Dat is aanzienlijk lager dan de meeste bureaus in dit overzicht die wel een prijs noemen. Past bij mkb-bedrijven die een vaste specialist willen zonder de instapprijs van een groter bureau.']],
+      ['Waar je op let bij de keuze', ['Vier vragen die meer zeggen dan de naam van het bureau: Wie werkt er daadwerkelijk in mijn account, en hoe vaak? Is de prijs vooraf duidelijk of hoor je die pas na een gesprek? Blijft het account op mijn naam staan? En hoe meten ze resultaat: tot aan de klik, of tot aan de aanvraag en order?']],
+    ],
+    faq: [
+      ['Is het goedkoopste bureau ook het beste?', 'Niet per se. Prijs zegt iets over het instapniveau, niet over de kwaliteit van het werk. Vraag altijd naar wie er in je account werkt en hoe resultaat wordt gemeten.'],
+      ['Waarom staat googleadvertising.nl zelf ook in dit overzicht?', 'Omdat een eerlijke vergelijking alleen eerlijk is als we onszelf niet overslaan. We laten het prijsniveau en de aanpak voor zich spreken.'],
+    ],
+    rel: ['google-ads-kosten', 'google-ads-bureau', 'google-ads-beheer'],
+  },
+  {
+    slug: 'google-ads-statistieken', name: 'Google Ads statistieken',
+    title: 'Google Ads statistieken 2026: CPC, CTR en conversieratio',
+    desc: 'De belangrijkste Google Ads statistieken van 2026: gemiddelde kosten per klik, click-through rate en conversieratio, met bron en wat ze voor je eigen account betekenen.',
+    h1: 'Google Ads statistieken 2026',
+    answer: 'Internationaal (VS) ligt de gemiddelde CTR in Google Ads in 2026 op 6,64%, de gemiddelde kosten per klik op $5,42 en de gemiddelde kosten per lead op $66,69 (bron: WordStream/LocaliQ Google Ads Benchmarks 2026). Nederlandse en B2B-klikprijzen wijken hier vaak van af; gebruik deze cijfers als referentiepunt, niet als doel.',
+    secs: [
+      ['De belangrijkste cijfers', ['WordStream en LocaliQ analyseerden ruim 13.000 zoekcampagnes in 23 branches, lopend van april 2025 tot en met maart 2026. De gemiddelde click-through rate in Google Ads kwam uit op 6,64%. De gemiddelde kosten per klik stegen naar $5,42, meer dan het dubbele van $2,32 tien jaar eerder. De gemiddelde kosten per lead kwamen uit op $66,69, voor het eerst in vijf jaar een daling ten opzichte van het jaar ervoor. De conversieratio steeg in 87% van de onderzochte branches.']],
+      ['Waarom dit Amerikaanse cijfers zijn', ['Dit zijn internationale benchmarkcijfers in dollars, vooral gebaseerd op Amerikaanse accounts. Nederlandse klikprijzen liggen door minder concurrentie vaak lager, en B2B-zoekwoorden met een lange aankoopcyclus wijken sterk af van de gemiddelden hierboven. Gebruik deze cijfers om trends te volgen (bijvoorbeeld: kosten per lead dalen weer), niet als concreet doel voor je eigen account.']],
+      ['Een concreet Nederlands voorbeeld', ['Bij Mitsubishi Forklift Trucks, een klant in intern transport, daalden de kosten per acquisitie in Google Ads met 80% door scherpere targeting en continue optimalisatie, terwijl het aantal productaanvragen met 122% steeg. Dat laat zien dat het verschil tussen een gemiddeld en een goed geoptimaliseerd account vaak groter is dan het verschil tussen twee landen of branches.']],
+    ],
+    faq: [
+      ['Zijn deze cijfers ook representatief voor B2B in Nederland?', 'Niet direct. B2B-zoekwoorden hebben vaak een langere aankoopcyclus en minder zoekvolume, wat de kosten per klik en per lead anders maakt dan het internationale gemiddelde.'],
+      ['Hoe weet ik of mijn eigen cijfers goed zijn?', 'Vergelijk je eigen account over tijd in plaats van met een landelijk gemiddelde. Een stijgende klikprijs met een dalende kostprijs per aanvraag is vaak een goed teken.'],
+    ],
+    rel: ['google-ads-kosten', 'google-ads-beheer', 'conversietracking-google-ads'],
   },
 ];
 
