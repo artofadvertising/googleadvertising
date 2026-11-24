@@ -269,7 +269,7 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
 <div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="btn btn-lg btn-outline" href="/gratis-accountcheck/">Gratis accountcheck</a></div>
 <p class="small">Geen lange contracten: je kunt elke maand stoppen. Of <a href="tel:${site.phoneHref}">bel ${site.phone}</a>.</p>
 ${badge}</div>
-<div class="hero-card"><p class="prijsroos"><small>vanaf</small><b>€199</b><small>per maand</small></p><div><p class="title">Wat wil je uitbesteden?</p><p class="muted" style="font-size:15px">Kies waar je mee wilt starten. Je aanvraag staat in drie stappen klaar.</p></div>
+<div class="hero-card"><p class="prijsroos"><small>vanaf</small> <b>€ 199</b> <small>per maand</small></p><div><p class="title">Wat wil je uitbesteden?</p><p class="muted" style="font-size:15px">Kies waar je mee wilt starten. Je aanvraag staat in drie stappen klaar.</p></div>
 <div class="stack" style="gap:10px">
 <a class="choice" href="/aanvragen/?keuze=volledig"><span>Google Ads volledig uitbesteden</span>${arrow}</a>
 <a class="choice" href="/aanvragen/?keuze=overnemen"><span>Bestaand account laten overnemen</span>${arrow}</a>

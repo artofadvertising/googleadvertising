@@ -54,6 +54,7 @@ Geen op productiepagina's die moeten ranken. Blijvend op noindex: `/aanvragen/be
 
 ## Logboek
 
+- 24-11-2026: merkstijl Raak als PR 4 aangeboden (wit, inkt en felroze-rood; Bricolage Grotesque en Figtree zelf gehost, samen 61 kB; teksten ongewijzigd). Checklist bij wijzigingen doorlopen tegen een build van `main`: titels, meta descriptions, H1's, H2's, canonicals, robots-meta, `sitemap.xml`, `llms.txt` en `robots.txt` gelijk; structured data gelijk op het logo-adres na (nieuw bestand `logo-googleadvertising-raak-512.png`). Lighthouse mobiel lokaal: 100 op alle vier de onderdelen voor de homepage (LCP 1,5 s, CLS 0, 117 kB) en `/google-ads-beheer/` (LCP 1,4 s, CLS 0, 89 kB). Na samenvoegen: Lighthouse op productie herhalen en in Search Console indexering aanvragen voor de homepage.
 - 24-11-2026: HTTPS hersteld. Twee AAAA-records bij mijndomein verwijderd en een CNAME voor `www` naar Vercel toegevoegd; Vercel gaf daarna de certificaten uit. Op `_dmarc` staat nog een CNAME naar Vercel die daar niet hoort; verwijderen of vervangen door een echte DMARC-regel.
 - 24-11-2026: fase 0 uitgevoerd, fase 1 als PR aangeboden.
 - 24-11-2026: PR 2 samengevoegd (merge-commit `e716053`) en op productie gemeten: Lighthouse mobiel 100 op de homepage en de dienstpagina, LCP 1,2 s; structured data op vijf pagina's zonder fouten; fase 1 opnieuw groen, 42 van 42 sitemap-adressen 200.
