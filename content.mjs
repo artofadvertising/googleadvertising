@@ -12,6 +12,7 @@ export const site = {
   companyUrl: 'https://artofadvertising.nl',
   whatsapp: '31502113612', // WhatsApp-nummer voor aanvragen, internationaal zonder + of spaties, bijv. 31612345678
   kvk: '', // vul het KvK-nummer in, dan verschijnt het in de footer
+  gtm: '', // Google Tag Manager-container, bijvoorbeeld GTM-ABC1234. Leeg = geen tags, geen cookievenster en geen cookiepagina
   updated: '2026-11-24',
   reviews: { score: '5,0', count: 39, url: 'https://www.google.com/maps/search/Art+of+Advertising+Groningen' },
   specialist: { name: 'Dirk Schaafsma', role: 'eigenaar van Art of Advertising en Google Ads-specialist', linkedin: 'https://www.linkedin.com/in/dirk-schaafsma-aaa498136' },
