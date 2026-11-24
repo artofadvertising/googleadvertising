@@ -10,7 +10,7 @@ export const site = {
   city: 'Groningen',
   company: 'Art of Advertising B.V.',
   companyUrl: 'https://artofadvertising.nl',
-  whatsapp: '', // WhatsApp-nummer voor aanvragen, internationaal zonder + of spaties, bijv. 31612345678
+  whatsapp: '31502113612', // WhatsApp-nummer voor aanvragen, internationaal zonder + of spaties, bijv. 31612345678
   kvk: '', // vul het KvK-nummer in, dan verschijnt het in de footer
   updated: '2026-11-23',
 };
