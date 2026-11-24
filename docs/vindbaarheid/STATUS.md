@@ -12,9 +12,9 @@ Klant en bureau zijn hier dezelfde partij: googleadvertising.nl is een label van
 | 1 | Technische basis | Deels (live en op productie groen gemeten; controle in Search Console wacht op fase 2) | 24-11-2026 | Na fase 2: URL-inspectie op de homepage en één dienstpagina. Beslissen over de titel van de homepage (67 tekens) |
 | 2 | Accounts en registraties | Deels (Search Console en Bing ingericht, sitemap ingediend, indexering aangevraagd) | 24-11-2026 | Over één tot drie dagen controleren of de homepage in Google en Bing staat; tweede eigenaar toevoegen; Tag Manager-container aanmaken |
 | 3 | Zoekwoorden en content | Open (eerste lijst staat in `zoekwoorden.md`) | 24-11-2026 | Volumes ophalen, beschrijvingen op lengte, regiopagina's eigen inhoud |
-| 4 | Structured data | Deels (markup compleet en lokaal gecontroleerd, PR 2; validatie op de live site volgt) | 24-11-2026 | Na samenvoegen valideren op validator.schema.org en in de Rich Results Test; KvK-nummer invullen; beslissen over `sameAs` |
+| 4 | Structured data | Deels (live; vijf pagina's zonder fouten op validator.schema.org) | 24-11-2026 | Rich Results Test door het bureau; KvK-nummer invullen; beslissen over `sameAs`; rapport in Search Console bekijken zodra het gevuld is |
 | 5 | Lokale vindbaarheid | Open | | Beslissen: eigen Bedrijfsprofiel of onderdeel van dat van Art of Advertising |
-| 6 | Performance | Deels (foto's in AVIF/WebP met `srcset`, fonts zelf gehost, PR 2; lokaal 100 en 100, LCP 1,7 s) | 24-11-2026 | Na samenvoegen Lighthouse op productie herhalen; beslissen over het contrast van de labels "Stap 2" en "Stap 3" |
+| 6 | Performance | Klaar op de simulatie (productie: Lighthouse mobiel 100 en 100, LCP 1,2 s); velddata volgt | 24-11-2026 | Core Web Vitals in Search Console bekijken zodra er velddata is; beslissen over het contrast van de labels "Stap 2" en "Stap 3" |
 | 7 | Meting en consent | Open (er draait nog niets) | | Tag Manager-container, cookiebanner, conversies bellen en WhatsApp-aanvraag |
 | 8 | Autoriteit en links | Open | | Link vanaf artofadvertising.nl; aanmelden bij Trustoo, Sortlist, Semrush Agency Partners |
 | 9 | AI-vindbaarheid | Deels (`llms.txt` en AI-crawlers geregeld) | 24-11-2026 | Eerste meting met de drie vragen zodra de site in Bing staat |
@@ -56,6 +56,7 @@ Geen op productiepagina's die moeten ranken. Blijvend op noindex: `/aanvragen/be
 
 - 24-11-2026: HTTPS hersteld. Twee AAAA-records bij mijndomein verwijderd en een CNAME voor `www` naar Vercel toegevoegd; Vercel gaf daarna de certificaten uit. Op `_dmarc` staat nog een CNAME naar Vercel die daar niet hoort; verwijderen of vervangen door een echte DMARC-regel.
 - 24-11-2026: fase 0 uitgevoerd, fase 1 als PR aangeboden.
+- 24-11-2026: PR 2 samengevoegd (merge-commit `e716053`) en op productie gemeten: Lighthouse mobiel 100 op de homepage en de dienstpagina, LCP 1,2 s; structured data op vijf pagina's zonder fouten; fase 1 opnieuw groen, 42 van 42 sitemap-adressen 200.
 - 24-11-2026: fase 2 deels uitgevoerd. Search Console (domein-property via TXT-record, plus URL-voorvoegsel) en Bing Webmaster Tools (via CNAME-record) geverifieerd; sitemap in beide ingediend (Google: 42 pagina's ontdekt); indexering aangevraagd voor de homepage en twee dienstpagina's.
 - 24-11-2026: fase 4 en 6 als PR 2 aangeboden (structured data aangevuld, foto's in AVIF/WebP, fonts zelf gehost).
 - 24-11-2026: PR 1 samengevoegd (merge-commit `b78a4d6`) en op productie gemeten: alle punten van fase 1 groen, 42 van 42 sitemap-adressen geven 200.

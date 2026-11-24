@@ -1,6 +1,6 @@
 # Fase 4: structured data
 
-Datum: 24 november 2026. Status: wijzigingen staan in PR 2. Gecontroleerd op de lokale build met een script dat de JSON-LD uit alle 44 HTML-bestanden terugleest. Valideren op validator.schema.org en in de Rich Results Test kan pas op de live site, dus na het samenvoegen.
+Datum: 24 november 2026. Status: live (PR 2, merge-commit `e716053`) en gevalideerd op validator.schema.org. Open blijven de Rich Results Test (vereist een Google-login) en het rapport in Search Console.
 
 ## Wat er op welke pagina staat
 
@@ -38,6 +38,20 @@ Eén `<script type="application/ld+json">` per pagina met een `@graph`. De marku
 | Elke FAQ-vraag en elk antwoord staat letterlijk zichtbaar op de pagina | Ja, op alle 35 pagina's |
 | `aggregateRating` in de markup | Nergens |
 
+## Validatie op de live site
+
+Gevalideerd op 24-11-2026 via https://validator.schema.org.
+
+| Pagina | Herkende objecten | Fouten | Waarschuwingen |
+|---|---|---|---|
+| `/` | WebPage, Service, FAQPage | 0 | 0 |
+| `/google-ads-beheer/` | WebPage, Service, FAQPage | 0 | 0 |
+| `/google-ads-specialist-groningen/` | WebPage, Service, FAQPage | 0 | 0 |
+| `/kennisbank/google-ads-of-seo/` | Article, FAQPage | 0 | 0 |
+| `/klantcases/promobee/` | Article | 0 | 0 |
+
+De validator toont alleen de objecten op het hoogste niveau; organisatie, website, specialist en kruimelpad hangen daaronder via hun `@id`.
+
 ## Open punten
 
 | Punt | Wie | Hoe we controleren |
@@ -45,7 +59,6 @@ Eén `<script type="application/ld+json">` per pagina met een `@graph`. De marku
 | KvK-nummer invullen in `content.mjs` (`site.kvk`) | Bureau | `identifier` verschijnt in de markup en het nummer in de footer |
 | `sameAs` van de organisatie wijst naar een zoekopdracht in Google Maps en naar het Instagram-account van Art of Advertising. Dat zijn geen profielen van googleadvertising.nl zelf. Beslissen: laten staan, of vervangen door eigen profielen (LinkedIn-pagina, en het Bedrijfsprofiel als dat er komt) | Bureau | `sameAs` bevat alleen profielen van het label of van het moederbedrijf, bewust gekozen |
 | Openingstijden en e-mailadres ontbreken in de markup, omdat ze niet op de site staan | Bureau | Staan op de site en in de markup, of bewust niet |
-| Valideren op https://validator.schema.org voor de homepage, één dienstpagina, één regiopagina en één kennisbankartikel | Claude, na het samenvoegen | Geen fouten |
 | Rich Results Test (vereist een Google-login) op dezelfde vier pagina's | Bureau | Geen fouten; waarschuwingen beoordelen |
 | Rapport "Verbeteringen" in Search Console na een paar dagen | Bureau, na fase 2 | Geen fouten |
 
@@ -53,4 +66,5 @@ Eén `<script type="application/ld+json">` per pagina met een `@graph`. De marku
 
 - [ ] Rich Results Test zonder fouten op de homepage, één dienstpagina, één regiopagina en één FAQ
 - [ ] Search Console toont geen structured-data-fouten (kan pas na fase 2)
+- [x] Geen fouten op validator.schema.org (vijf pagina's, 24-11-2026)
 - [x] NAP in de markup identiek aan de footer (er is geen eigen Bedrijfsprofiel om mee te vergelijken)
