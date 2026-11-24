@@ -20,6 +20,17 @@ Lighthouse 12, mobiel, gesimuleerde vertraging.
 
 Toegankelijkheid, best practices en SEO zijn gelijk gebleven (96 / 100 / 100 op de homepage, 100 / 100 / 100 op de dienstpagina).
 
+### Na de merkstijl Raak (PR 4, productie, 24-11-2026)
+
+Lighthouse 12.8.2, mobiel, gesimuleerde vertraging, gemeten op `https://googleadvertising.nl` na het samenvoegen van PR 4 (merge-commit `f5e411d`).
+
+| Pagina | Performance | LCP | FCP | CLS | Gewicht | Toegankelijkheid | Best practices | SEO |
+|---|---|---|---|---|---|---|---|---|
+| `/` | 100 | 1,2 s | 0,9 s | 0 | 117 kB | 100 | 100 | 100 |
+| `/google-ads-beheer/` | 100 | 1,2 s | 0,8 s | 0 | 89 kB | 100 | 100 | 100 |
+
+De homepage is 19 kB lichter dan vóór Raak (136 kB), doordat de twee fonts samen 61 kB zijn in plaats van 84 kB. De toegankelijkheid van de homepage gaat van 96 naar 100: de labels "Stap 2" en "Stap 3" staan nu in inkt op wit.
+
 ## Wat er gedaan is
 
 ### Afbeeldingen
@@ -59,13 +70,13 @@ Het script maakt van elke JPG in `public/assets` (behalve de deelafbeelding `og-
 | Caching van assets | `/assets/` en `/fonts/` een jaar, immutable | Groen |
 | `styles.css` en `form.js` met hash in de naam | Niet; ze worden bij elk bezoek opnieuw gecontroleerd | Oranje, geaccepteerd |
 | Badge Google Partner (PNG, 20 kB, getoond op 80 x 76) | Niet omgezet; Lighthouse schat 15 kB winst | Open, klein |
-| Kleurcontrast | Twee labels ("Stap 2" en "Stap 3", groen en oranje op wit) halen het contrast niet | Open, keuze in de huisstijl |
+| Kleurcontrast | De labels "Stap 2" en "Stap 3" haalden in groen en oranje het contrast niet; in de merkstijl Raak staan ze in inkt op wit | Groen (Lighthouse toegankelijkheid 100) |
 
 ## Nog te doen
 
 1. Gedaan op 24-11-2026: Lighthouse mobiel op productie (tabel hierboven). Ook gecontroleerd: fonts en AVIF-bestanden geven 200 met de juiste `content-type` en een jaar cache; geen verwijzing meer naar Google Fonts in de HTML.
 2. Zodra er genoeg bezoekers zijn: de velddata in PageSpeed Insights en het rapport Core Web Vitals in Search Console (na 28 dagen).
-3. Beslissen over de kleur van de labels "Stap 2" en "Stap 3".
+3. Gedaan op 24-11-2026 met de merkstijl Raak: de labels "Stap 2" en "Stap 3" staan in inkt op wit.
 
 ## Definition of done
 
