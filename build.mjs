@@ -31,7 +31,6 @@ const org = {
   parentOrganization: { '@type': 'Organization', name: site.company, url: site.companyUrl },
   founder: { '@id': `${site.url}/#specialist` },
   image: `${site.url}/assets/google-ads-specialist-in-overleg-met-klant.jpg`,
-  aggregateRating: { '@type': 'AggregateRating', ratingValue: site.reviews.score.replace(',', '.'), reviewCount: site.reviews.count },
   sameAs: [site.reviews.url, 'https://www.instagram.com/aoa_marketing/'],
 };
 const faqLd = (faq) => ({ '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
@@ -67,7 +66,15 @@ ${col('Diensten', 'Diensten', d)}${col('Voor wie', 'Doelgroepen', w)}${col('Goog
 </div></footer>`;
 }
 
-function page({ path, title, desc, body, ld = [], noindex = false, scripts = '' }) {
+const SUFFIX = ' | googleadvertising.nl';
+const OG_IMAGE = '/assets/og-google-ads-uitbesteden.jpg'; // 1200 x 630, zie docs/vindbaarheid/01-techniek.md
+
+// `file` schrijft naar een vast bestand in plaats van <path>/index.html (gebruikt voor 404.html); zo'n pagina krijgt geen canonical.
+// `fullTitle` laat de titel ongemoeid (alleen de homepage: daar blijft de merknaam staan, ook als hij langer is dan 60 tekens).
+function page({ path, title, desc, body, ld = [], noindex = false, scripts = '', file = null, fullTitle = false }) {
+  // Titel maximaal 60 tekens: past de merknaam er niet achter, dan vervalt hij (Google toont de sitenaam al apart).
+  if (!fullTitle && title.length > 60 && title.endsWith(SUFFIX)) title = title.slice(0, -SUFFIX.length);
+  if (!fullTitle && title.length > 60) console.warn(`LET OP: titel langer dan 60 tekens (${title.length}) op ${path}: ${title}`);
   const canonical = site.url + path;
   const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': [org, specialistLd, ...ld] });
   const html = `<!doctype html>
@@ -77,17 +84,20 @@ function page({ path, title, desc, body, ld = [], noindex = false, scripts = '' 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
-<link rel="canonical" href="${canonical}">
-${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">'}
+${file ? '' : `<link rel="canonical" href="${canonical}">\n`}${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">'}
 <meta property="og:type" content="website">
 <meta property="og:locale" content="nl_NL">
 <meta property="og:site_name" content="googleadvertising.nl">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${canonical}">
-<meta property="og:image" content="${site.url}/assets/google-ads-specialist-in-overleg-met-klant.jpg">
+${file ? '' : `<meta property="og:url" content="${canonical}">\n`}<meta property="og:image" content="${site.url}${OG_IMAGE}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Google Ads specialist bespreekt de resultaten met een klant aan tafel">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Big+Shoulders+Display:wght@600;700;800&display=swap">
@@ -104,9 +114,9 @@ ${scripts}
 </body>
 </html>
 `;
-  const file = join(OUT, path, 'index.html');
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, html);
+  const target = file ? join(OUT, file) : join(OUT, path, 'index.html');
+  mkdirSync(dirname(target), { recursive: true });
+  writeFileSync(target, html);
   if (!noindex) pages.push(path);
 }
 
@@ -172,7 +182,7 @@ for (const c of cases) {
 </div></section>
 ${c.testimonial ? `<section class="section alt"><div class="wrap"><div class="answer"><p class="kicker">In hun woorden</p><p>“${esc(c.testimonial.quote)}”</p><p class="small">${esc(c.testimonial.naam)}, ${esc(c.testimonial.functie)}</p></div></div></section>` : ''}
 <section class="section${c.testimonial ? '' : ' alt'}"><div class="wrap stack gap-lg"><h2>Meer klantcases</h2><div class="grid g3">${others.map((o) => `<a class="card" href="/klantcases/${o.slug}/"><h3>${esc(o.name)}</h3><p>${esc(o.resultaten[0].label)}</p></a>`).join('')}</div>${band('Benieuwd wat dit voor jouw Google Ads kan betekenen?')}</div></section>`;
-  page({ path, title: `${c.title} | googleadvertising.nl`, desc: c.desc, body, ld: [crumbLd(trail), { '@type': 'Article', headline: c.title, description: c.desc, datePublished: site.updated, dateModified: site.updated, inLanguage: 'nl', author: { '@id': `${site.url}/#specialist` }, publisher: { '@id': `${site.url}/#organisatie` }, mainEntityOfPage: site.url + path }] });
+  page({ path, title: `${c.seoTitle || c.title} | googleadvertising.nl`, desc: c.desc, body, ld: [crumbLd(trail), { '@type': 'Article', headline: c.title, description: c.desc, datePublished: site.updated, dateModified: site.updated, inLanguage: 'nl', author: { '@id': `${site.url}/#specialist` }, publisher: { '@id': `${site.url}/#organisatie` }, mainEntityOfPage: site.url + path }] });
 }
 {
   const trail = [['Home', '/'], ['Klantcases', '/klantcases/']];
@@ -204,7 +214,7 @@ ${faqBlock(`Vragen over een Google Ads specialist in ${c}.`, faq)}
 <section class="section alt"><div class="wrap stack gap-lg"><h2>Ook interessant</h2>${related(['google-ads-specialist', 'google-ads-audit', 'google-ads-kosten', 'google-ads-voor-lokale-dienstverleners'])}
 <nav class="chips" aria-label="Andere regio's">${cities.filter(([x]) => x !== c).map(([x]) => `<a href="/google-ads-specialist-${slugify(x)}/">Google Ads specialist ${x}</a>`).join('')}</nav>
 ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
-  page({ path, title: `Google Ads specialist ${c}: beheer vanaf € 199 per maand | googleadvertising.nl`, desc: `Google Ads specialist voor bedrijven in ${c} en omgeving. Eén vast aanspreekpunt, wekelijks geoptimaliseerd, geen minimumbudget en maandelijks opzegbaar.`, body, ld: [crumbLd(trail), faqLd(faq)] });
+  page({ path, title: `Google Ads specialist ${c}: vanaf € 199 per maand | googleadvertising.nl`, desc: `Google Ads specialist voor bedrijven in ${c} en omgeving. Eén vast aanspreekpunt, wekelijks geoptimaliseerd, geen minimumbudget en maandelijks opzegbaar.`, body, ld: [crumbLd(trail), faqLd(faq)] });
 }
 
 // ---------- home ----------
@@ -335,7 +345,7 @@ ${lb('Google Ads specialist per regio', 'Regio', cities.map(([c]) => [c, `/googl
 <div class="txt"><h2>Klaar om meer uit je Google Ads te halen?</h2><p class="muted" style="font-size:18px">Vraag een voorstel aan of laat eerst je account checken. Je krijgt antwoord van de specialist die ook je campagnes gaat beheren.</p></div>
 <div class="act"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div>
 </div></div></section>`;
-  page({ path: '/', title: 'Google Ads uitbesteden vanaf € 199 per maand | googleadvertising.nl', desc: 'Google Ads uitbesteden aan een vaste specialist. Wekelijks geoptimaliseerd, Tag Manager inbegrepen, geen minimumbudget en maandelijks opzegbaar. Officieel Google Partner.', body, ld: [{ '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, inLanguage: 'nl' }, faqLd(homeFaq), { '@type': 'Service', name: 'Google Ads uitbesteden', serviceType: 'Google Ads beheer', provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, offers: { '@type': 'Offer', price: '199', priceCurrency: 'EUR', description: 'Beheer per maand, inclusief Google Tag Manager, maandelijks opzegbaar' } }] });
+  page({ path: '/', fullTitle: true, title: 'Google Ads uitbesteden vanaf € 199 per maand | googleadvertising.nl', desc: 'Google Ads uitbesteden aan een vaste specialist. Wekelijks geoptimaliseerd, Tag Manager inbegrepen, geen minimumbudget en maandelijks opzegbaar. Officieel Google Partner.', body, ld: [{ '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, inLanguage: 'nl' }, faqLd(homeFaq), { '@type': 'Service', name: 'Google Ads uitbesteden', serviceType: 'Google Ads beheer', provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, offers: { '@type': 'Offer', price: '199', priceCurrency: 'EUR', description: 'Beheer per maand, inclusief Google Tag Manager, maandelijks opzegbaar' } }] });
 }
 
 // ---------- aanvragen ----------
@@ -401,6 +411,14 @@ ${badge}
 </div></div></section>`;
   page({ path: '/gratis-accountcheck/', title: 'Gratis Google Ads accountcheck aanvragen | googleadvertising.nl', desc: 'Vraag in drie velden een gratis Google Ads accountcheck aan. Geen verplichtingen, binnen 1 dag reactie van een specialist.', body, scripts: '<script src="/form.js" defer></script>' });
 }
+
+// ---------- 404 ----------
+page({
+  path: '/404', file: '404.html', noindex: true, title: 'Pagina niet gevonden | googleadvertising.nl', desc: 'Deze pagina bestaat niet of is verplaatst.',
+  body: `<section class="alt page-hero"><div class="wrap"><div class="inner"><p class="kicker">Foutcode 404</p><h1>Deze pagina bestaat niet.</h1><p class="lead">De link klopt niet of de pagina is verplaatst. Hieronder vind je de pagina's die het vaakst gezocht worden.</p><div class="actions"><a class="btn btn-lg" href="/">Naar de homepage</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div></div></div></section>
+<section class="section"><div class="wrap stack gap-lg"><h2>Misschien zocht je dit</h2>${related(['google-ads-beheer', 'google-ads-specialist', 'google-ads-kosten', 'google-ads-audit'])}
+<nav class="chips" aria-label="Meer pagina's"><a href="/kennisbank/">Kennisbank</a><a href="/klantcases/">Klantcases</a><a href="/gratis-accountcheck/">Gratis accountcheck</a><a href="/aanvragen/">Voorstel aanvragen</a></nav></div></section>`,
+});
 
 // ---------- statische bestanden ----------
 cpSync('src/styles.css', join(OUT, 'styles.css'));

@@ -140,7 +140,7 @@ export const spokes = [
   },
   {
     slug: 'google-ads-kosten', group: 'dienst', name: 'Google Ads kosten',
-    title: 'Google Ads kosten: wat betaal je aan Google en aan een bureau?',
+    title: 'Google Ads kosten: wat betaal je aan Google en een bureau?',
     desc: 'Wat kost Google Ads? Je betaalt advertentiebudget aan Google en een beheerfee aan het bureau. Beheer vanaf € 199 per maand, geen minimumbudget, maandelijks opzegbaar.',
     h1: 'Google Ads kosten. Wat je aan Google betaalt en wat aan beheer.',
     intro: 'De kosten van Google Ads bestaan uit twee delen: het advertentiebudget en het beheer. Hieronder staat wat elk deel bepaalt en hoe je een realistisch budget kiest.',
@@ -188,7 +188,7 @@ export const spokes = [
   },
   {
     slug: 'performance-max-uitbesteden', group: 'dienst', name: 'Performance Max uitbesteden',
-    title: 'Performance Max uitbesteden: grip op een automatische campagne',
+    title: 'Performance Max uitbesteden: grip op je campagne',
     desc: 'Performance Max uitbesteden aan een specialist: goede signalen, de juiste doelen en inzicht in waar je budget heen gaat. Beheer vanaf € 199 per maand.',
     h1: 'Performance Max uitbesteden. Automatisch, maar niet onbeheerd.',
     intro: 'Performance Max doet veel zelf, en juist daarom moet iemand bewaken waarop het stuurt. We zorgen voor de juiste doelen, signalen en uitsluitingen.',
@@ -211,7 +211,7 @@ export const spokes = [
   },
   {
     slug: 'youtube-ads-uitbesteden', group: 'dienst', name: 'YouTube Ads uitbesteden',
-    title: 'YouTube Ads uitbesteden: video en display die meetbaar bijdragen',
+    title: 'YouTube Ads uitbesteden: video die meetbaar bijdraagt',
     desc: 'YouTube Ads en Display uitbesteden aan een Google Ads specialist. Bereik en remarketing, gemeten op wat het aan aanvragen toevoegt. Beheer vanaf € 199 per maand.',
     h1: 'YouTube Ads uitbesteden. Bereik dat je terugziet in aanvragen.',
     intro: 'Video- en displaycampagnes voor bedrijven die meer mensen willen bereiken dan alleen wie vandaag zoekt, en willen weten wat dat oplevert.',
@@ -234,7 +234,7 @@ export const spokes = [
   },
   {
     slug: 'conversietracking-google-ads', group: 'dienst', name: 'Conversietracking Google Ads',
-    title: 'Conversietracking Google Ads laten inrichten met Tag Manager',
+    title: 'Conversietracking Google Ads inrichten met Tag Manager',
     desc: 'Conversietracking voor Google Ads laten inrichten: Google Tag Manager, GA4, Consent Mode en een koppeling met je CRM. Tag Manager is inbegrepen bij ons beheer.',
     h1: 'Conversietracking voor Google Ads. Meten welke klikken klant worden.',
     intro: 'Zonder goede meting stuurt Google op de verkeerde signalen. We richten Google Tag Manager, GA4 en de koppeling met je CRM in, zodat je campagnes leren van echte klanten.',
@@ -281,7 +281,7 @@ export const spokes = [
   },
   {
     slug: 'google-ads-voor-webshops', group: 'voor', name: 'Google Ads voor webshops',
-    title: 'Google Ads voor webshops: meer rendement uit Shopping en zoeken',
+    title: 'Google Ads voor webshops: meer rendement uit Shopping',
     desc: 'Google Ads voor webshops: productfeed, Shopping en Performance Max, gestuurd op marge. Beheer vanaf € 199 per maand, geen minimumbudget.',
     h1: 'Google Ads voor webshops. Meer winst uit hetzelfde advertentiebudget.',
     intro: 'Voor webshops die al adverteren en willen weten welke producten en campagnes echt geld opleveren. We sturen op marge, niet alleen op omzet.',
@@ -328,7 +328,7 @@ export const spokes = [
   },
   {
     slug: 'google-ads-voor-lokale-dienstverleners', group: 'voor', name: 'Google Ads voor lokale dienstverleners',
-    title: 'Google Ads voor lokale dienstverleners: gevonden in je eigen regio',
+    title: 'Google Ads voor lokale dienstverleners in je eigen regio',
     desc: 'Google Ads voor installateurs, praktijken, kantoren en andere lokale dienstverleners. Alleen adverteren in je werkgebied, meten op telefoontjes en aanvragen.',
     h1: 'Google Ads voor lokale dienstverleners. Gevonden worden waar je werkt.',
     intro: 'Voor bedrijven die in een vaste regio werken en geen budget willen besteden aan zoekers buiten hun werkgebied.',
@@ -377,6 +377,7 @@ export const cases = [
   {
     slug: 'mitsubishi-forklift-trucks', name: 'Mitsubishi Forklift Trucks',
     title: 'Mitsubishi Forklift Trucks: 80% lagere kosten per aanvraag via Google Ads',
+    seoTitle: 'Mitsubishi Forklift Trucks: 80% lagere kosten per aanvraag', // <title>, maximaal 60 tekens; title is ook de zichtbare kop
     desc: 'Hoe Mitsubishi Forklift Trucks de kosten per acquisitie met 80% verlaagde en meer productaanvragen kreeg via Google Ads.',
     sector: 'Intern transport (heftrucks en magazijnoplossingen)', regio: 'Almere',
     kanalen: ['Google Ads', 'Meta', 'SEO', 'Google Tag Manager', 'server-side tracking'],
@@ -416,6 +417,7 @@ export const cases = [
   {
     slug: 'allround-hekwerk', name: 'Allround Hekwerk',
     title: 'Allround Hekwerk: inzicht in wat elke Google Ads-campagne oplevert',
+    seoTitle: 'Allround Hekwerk: inzicht in wat Google Ads oplevert',
     desc: 'Hoe Allround Hekwerk met Google Ads en dashboards precies ziet welke campagne aanvragen oplevert.',
     sector: 'Hekwerk en afrastering', regio: 'Nederland (landelijk)',
     kanalen: ['Google Ads', 'SEO', 'Linkbuilding', 'Google Tag Manager', 'server-side tracking'],
@@ -487,7 +489,7 @@ export const articles = [
   },
   {
     slug: 'google-ads-levert-niets-op', name: 'Waarom levert mijn Google Ads niets op',
-    title: 'Google Ads levert niets op? Zeven oorzaken en wat je eraan doet',
+    title: 'Google Ads levert niets op? Zeven oorzaken en oplossingen',
     desc: 'Wel klikken, geen klanten? De zeven meest voorkomende oorzaken waarom Google Ads niets oplevert, en hoe je ze herkent in je eigen account.',
     h1: 'Waarom levert mijn Google Ads niets op?',
     answer: 'Google Ads levert meestal niets op door één van drie dingen: je betaalt voor zoektermen die niet bij je aanbod passen, je meting klopt niet waardoor Google op de verkeerde signalen stuurt, of je landingspagina zet bezoekers niet aan tot een aanvraag.',
@@ -537,7 +539,7 @@ export const articles = [
   },
   {
     slug: 'google-ads-begrippen', name: 'Google Ads begrippenlijst',
-    title: 'Google Ads begrippenlijst: de belangrijkste termen uitgelegd',
+    title: 'Google Ads begrippenlijst: belangrijkste termen uitgelegd',
     desc: 'CPC, CPA, ROAS, kwaliteitsscore, vertoningspercentage: de belangrijkste Google Ads begrippen in gewone taal uitgelegd.',
     h1: 'Google Ads begrippenlijst',
     answer: 'Deze lijst legt de termen uit die je in Google Ads rapportages tegenkomt. De drie belangrijkste om te onthouden: CPC is wat een klik kost, CPA is wat een aanvraag of order kost, en ROAS is de omzet per geïnvesteerde euro.',
@@ -555,7 +557,7 @@ export const articles = [
   },
   {
     slug: 'beste-google-ads-bureaus-nederland', name: 'Beste Google Ads bureaus Nederland',
-    title: 'Beste Google Ads bureaus in Nederland: een eerlijke vergelijking',
+    title: 'Beste Google Ads bureaus in Nederland: eerlijke vergelijking',
     desc: 'Een eerlijke vergelijking van Google Ads bureaus in Nederland: prijsniveau, specialisatie en voor wie elk bureau het best past, inclusief onszelf.',
     h1: 'Beste Google Ads bureaus in Nederland',
     answer: 'Er is niet één beste Google Ads bureau: het verschilt in prijsniveau, specialisatie en wie het werk doet. Hieronder een eerlijk overzicht van bureaus die opvallen in Nederland, inclusief waar googleadvertising.nl in past.',
