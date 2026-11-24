@@ -176,7 +176,7 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
     ['Hoeveel advertentiebudget heb ik nodig?', 'Dat hangt af van de klikprijzen in jouw branche en hoeveel aanvragen je wilt. Er is geen minimumbudget. In de intake rekenen we door wat voor jouw doel realistisch is.'],
     ['Is Google Ads uitbesteden beter dan zelf doen?', 'Uitbesteden loont als het beheer je meer tijd kost dan je hebt, of als je niet kunt zien welke klikken klant worden. Bij een klein budget en genoeg tijd kun je het prima zelf doen.'],
     ['Wat is het verschil tussen Google Ads en SEO?', 'Met Google Ads betaal je per klik en sta je direct bovenaan. Met SEO betaal je niet per klik, maar duurt het maanden voor je op die posities staat. De twee vullen elkaar aan.'],
-    ['Hoe vraag ik een voorstel aan?', 'Vul het aanvraagformulier in. Je kiest wat je wilt uitbesteden en laat je gegevens achter. Je krijgt binnen 1 dag reactie.'],
+    ['Hoe vraag ik een voorstel aan?', 'Vul het aanvraagformulier in. Je kiest wat je wilt uitbesteden en laat je gegevens achter. Je aanvraag gaat als WhatsApp-bericht naar ons en je krijgt binnen 1 dag reactie.'],
   ];
   const svc = [
     ['google-ads-beheer', 'Google Ads beheer', 'Opzet, Tag Manager, wekelijkse optimalisatie en maandelijks overleg met één vaste specialist.', true],
@@ -288,7 +288,7 @@ ${lb('Google Ads specialist per regio', 'Regio', cities.map(([c]) => [c, `/googl
   const pills = (name, items) => items.map((l) => `<label class="pill"><input type="radio" name="${name}" value="${esc(l)}">${esc(l)}</label>`).join('');
   const body = `<section class="alt"><div class="wrap" style="padding-block:56px 88px"><div class="stack gap-lg">
 <div class="stack narrow"><p class="kicker">Voorstel aanvragen</p><h1 style="font-size:clamp(32px,4.4vw,48px)">Haal meer uit je Google Ads.</h1><p class="lead">Drie korte stappen. Je aanvraag gaat rechtstreeks naar onze Google Ads specialisten en verplicht je tot niets.</p></div>
-<form class="form-layout" id="aanvraag" method="post" action="/api/aanvraag" novalidate>
+<form class="form-layout" id="aanvraag" data-wa="${site.whatsapp}" novalidate>
 <div class="form-main">
 <fieldset><legend><span class="tag">Stap 1</span><span class="t">Wat wil je uitbesteden?</span><span class="muted" style="font-size:15px">Meerdere keuzes mogelijk.</span></legend>
 <div class="opts">${opts.map(([v, l, d]) => `<label class="opt"><input type="checkbox" name="keuze" value="${esc(l)}" data-key="${v}"><span class="box"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>${l}</b><small>${d}</small></span></label>`).join('')}</div>
@@ -306,13 +306,13 @@ ${lb('Google Ads specialist per regio', 'Regio', cities.map(([c]) => [c, `/googl
 <div class="field"><label for="f-tel">Telefoonnummer</label><input id="f-tel" name="telefoon" type="tel" autocomplete="tel" required><p class="err" data-err="telefoon" hidden>Vul je telefoonnummer in, dan kunnen we snel reageren.</p></div>
 </div>
 <div class="field"><label for="f-opm">Opmerking of vraag <span>(niet verplicht)</span></label><textarea id="f-opm" name="opmerking" rows="4"></textarea></div>
-<div class="hp" aria-hidden="true"><label>Laat dit veld leeg<input type="text" name="fax" tabindex="-1" autocomplete="off"></label></div>
 </fieldset>
 </div>
 <aside class="summary" aria-label="Jouw aanvraag"><h2>Jouw aanvraag</h2>
 <ul id="sum-keuze"><li class="muted" style="font-weight:400">Nog niets gekozen.</li></ul>
 <dl><div><dt>Account</dt><dd id="sum-account">Nog niet gekozen</dd></div><div><dt>Budget per maand</dt><dd id="sum-budget">Nog niet gekozen</dd></div></dl>
 <button class="btn btn-lg" type="submit">Aanvraag versturen</button>
+<p class="small">Je aanvraag opent als bericht in WhatsApp. Druk daar op verzenden.</p>
 <p class="err" id="form-err" hidden>Versturen is niet gelukt. Probeer het opnieuw of bel ${site.phone}.</p>
 <p class="small">Je krijgt binnen 1 dag reactie.</p>
 ${badge}
@@ -320,7 +320,7 @@ ${badge}
 </aside>
 </form></div></div></section>`;
   page({ path: '/aanvragen/', title: 'Voorstel aanvragen voor Google Ads | googleadvertising.nl', desc: 'Vraag in drie stappen een voorstel aan voor het uitbesteden van je Google Ads. Je krijgt binnen 1 dag reactie van een specialist.', body, scripts: '<script src="/form.js" defer></script>' });
-  page({ path: '/aanvragen/bedankt/', noindex: true, title: 'Aanvraag verstuurd | googleadvertising.nl', desc: 'Je aanvraag is ontvangen.', body: `<section class="alt"><div class="wrap" style="padding-block:56px 88px"><div class="done" role="status"><h1 style="font-size:clamp(30px,4vw,40px)">Aanvraag verstuurd.</h1><p class="lead">Bedankt. Je aanvraag is bij ons binnen. Een specialist neemt binnen 1 dag contact met je op om een intake in te plannen.</p><ol class="muted" style="padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Aanvraag: staat bij ons in de inbox.</li><li>Intake en accountcheck: we kijken in je account of naar je markt.</li><li>Voorstel: je ontvangt aanpak, budgetadvies en prijs.</li></ol><div class="actions"><a class="link-strong" href="/">Terug naar home</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div></div></div></section>` });
+  page({ path: '/aanvragen/bedankt/', noindex: true, title: 'Aanvraag verstuurd | googleadvertising.nl', desc: 'Je aanvraag is ontvangen.', body: `<section class="alt"><div class="wrap" style="padding-block:56px 88px"><div class="done" role="status"><h1 style="font-size:clamp(30px,4vw,40px)">Bijna geregeld.</h1><p class="lead">Je aanvraag staat als bericht klaar in WhatsApp. Druk daar op verzenden, dan neemt een specialist binnen 1 dag contact met je op om een intake in te plannen.</p><ol class="muted" style="padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Aanvraag: je verstuurt het WhatsApp-bericht.</li><li>Intake en accountcheck: we kijken in je account of naar je markt.</li><li>Voorstel: je ontvangt aanpak, budgetadvies en prijs.</li></ol><div class="actions"><a class="link-strong" href="/">Terug naar home</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div></div></div></section>` });
 }
 
 // ---------- statische bestanden ----------
@@ -355,4 +355,5 @@ ${articles.map((a) => L(a.name, `/kennisbank/${a.slug}/`, a.answer)).join('\n')}
 
 ${cities.map(([c]) => L(`Google Ads specialist ${c}`, `/google-ads-specialist-${slugify(c)}/`)).join('\n')}
 `);
+if (!site.whatsapp) console.warn('LET OP: site.whatsapp is leeg in content.mjs; het aanvraagformulier kan nog niets versturen.');
 console.log(`Klaar: ${all.length} pagina's in ./${OUT}`);

@@ -38,11 +38,16 @@
     var bad = false;
     Object.keys(err).forEach(function (k) { show(k, err[k]); if (err[k]) bad = true; });
     if (bad) { var first = form.querySelector('.err:not([hidden])'); if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
-    var btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true; btn.textContent = 'Bezig met versturen';
-    var body = {}; d.forEach(function (v, k) { if (k !== 'keuze') body[k] = v; }); body.keuze = keuze;
-    fetch('/api/aanvraag', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
-      .then(function (r) { if (!r.ok) throw new Error(); location.href = '/aanvragen/bedankt/'; })
-      .catch(function () { btn.disabled = false; btn.textContent = 'Aanvraag versturen'; document.getElementById('form-err').hidden = false; });
+    var wa = (form.dataset.wa || '').replace(/\D/g, '');
+    if (!wa) { document.getElementById('form-err').hidden = false; return; }
+    var val = function (k) { return String(d.get(k) || '').trim(); };
+    var lines = ['Nieuwe aanvraag via googleadvertising.nl', '', 'Wil uitbesteden: ' + keuze.join(', ')];
+    if (val('account')) lines.push('Google Ads account: ' + val('account'));
+    if (val('budget')) lines.push('Budget per maand: ' + val('budget'));
+    if (val('website')) lines.push('Website: ' + val('website'));
+    lines.push('', 'Naam: ' + val('naam'), 'Bedrijf: ' + val('bedrijf'), 'E-mail: ' + val('email'), 'Telefoon: ' + val('telefoon'));
+    if (val('opmerking')) lines.push('', 'Opmerking: ' + val('opmerking'));
+    window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    location.href = '/aanvragen/bedankt/';
   });
 })();
