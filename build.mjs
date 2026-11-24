@@ -49,15 +49,18 @@ const cookieBanner = site.gtm ? `<div class="cookie" id="cookie" hidden>
 ` : '';
 rmSync(OUT, { recursive: true, force: true });
 
-const check = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-const arrow = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
-const mark = '<span class="logo-mark"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg></span>';
-const logo = `<a class="logo" href="/" aria-label="googleadvertising.nl, naar home">${mark}<span>googleadvertising<small>.nl</small></span></a>`;
+// Merkstijl Raak: de roos (ring met stip) is het merkteken en vervangt het vinkje in lijsten.
+const check = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7.4" fill="none" stroke="#0B0B0B" stroke-width="2.2"/><circle cx="9" cy="9" r="3.2" fill="#FF2E63"/></svg>';
+const arrow = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
+const logo = `<a class="logo" href="/" aria-label="googleadvertising.nl, naar home"><span>googleadvertising<span class="roos">.</span>nl</span></a>`;
 const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner<br><a href="${site.reviews.url}" target="_blank" rel="noopener">★ ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></span></div>`;
 const list = (items) => `<ul class="checks col">${items.map((i) => `<li>${check}<span>${esc(i)}</span></li>`).join('')}</ul>`;
 const evidenceTag = (r) => `<span class="tag">${r.evidence === 'gemeten' ? 'Gemeten in' : 'Terug te zien in'} ${esc(r.scope)}</span>`;
-const cardAccents = ['var(--accent)', 'var(--accent2)', 'var(--accent3)'];
-const sparkline = (color) => `<svg class="spark" width="90" height="26" viewBox="0 0 90 26" fill="none" aria-hidden="true" style="color:${color}"><path d="M2 22 L18 16 L34 18 L50 9 L66 11 L88 3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// Drie varianten op de roos voor de drie pijlers op de homepage.
+const roosIcon = (inner) => `<svg class="pillar-icon" viewBox="0 0 52 52" aria-hidden="true">${inner}</svg>`;
+const roosVast = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#0B0B0B" stroke-width="4"/><circle cx="26" cy="26" r="8" fill="#FF2E63"/>');
+const roosWekelijks = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#0B0B0B" stroke-width="4" stroke-dasharray="14.75 5"/><circle cx="26" cy="26" r="8" fill="#FF2E63"/>');
+const roosVizier = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#0B0B0B" stroke-width="4"/><path d="M26 0v14M26 38v14M0 26h14M38 26h14" stroke="#0B0B0B" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#FF2E63"/>');
 const byline = () => `<p class="small">Door <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${esc(site.specialist.name)}</a>, ${esc(site.specialist.role)} — bijgewerkt op ${new Date(site.updated).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</p>`;
 
 // Foto's staan als JPG (2000 breed) in public/assets; tools/convert-images.mjs maakt de AVIF- en WebP-varianten.
@@ -75,7 +78,7 @@ const org = {
   address: { '@type': 'PostalAddress', streetAddress: site.street, postalCode: site.zip, addressLocality: site.city, addressCountry: 'NL' },
   parentOrganization: { '@type': 'Organization', name: site.company, legalName: site.company, url: site.companyUrl },
   founder: { '@id': `${site.url}/#specialist` },
-  logo: `${site.url}/assets/logo-googleadvertising-512.png`,
+  logo: `${site.url}/assets/logo-googleadvertising-raak-512.png`,
   image: `${site.url}/assets/google-ads-specialist-in-overleg-met-klant.jpg`,
   ...(site.kvk ? { identifier: { '@type': 'PropertyValue', propertyID: 'KvK', value: site.kvk } } : {}),
   sameAs: [site.reviews.url, 'https://www.instagram.com/aoa_marketing/'],
@@ -102,6 +105,7 @@ function footer() {
   const r = cities.map(([c]) => [c, `/google-ads-specialist-${slugify(c)}/`]);
   const k = [['Google Ads uitbesteden', '/'], ['Klantcases', '/klantcases/'], ['Kennisbank', '/kennisbank/'], ...articles.slice(0, 4).map((a) => [a.name, `/kennisbank/${a.slug}/`]), ['Voorstel aanvragen', '/aanvragen/']];
   return `<footer class="site-footer"><div class="wrap">
+<p class="slogan">Elke klik raak<span class="punt">.</span></p>
 <div class="f-top">
 <div class="f-brand">${logo}<p>Google Ads uitbesteden aan een vaste specialist. Voor bedrijven in heel Nederland die meer uit hun advertentiebudget willen halen.</p>${badge}</div>
 <div class="f-cta"><p class="title">Meer uit je Google Ads halen?</p><p>Vanaf € 199 per maand, maandelijks opzegbaar. Je krijgt binnen 1 dag reactie.</p><a class="btn" href="/aanvragen/">Voorstel aanvragen</a><a href="tel:${site.phoneHref}"><strong>Of bel ${site.phone}</strong></a></div>
@@ -116,6 +120,8 @@ ${col('Diensten', 'Diensten', d)}${col('Voor wie', 'Doelgroepen', w)}${col('Goog
 </div></footer>`;
 }
 
+// Merkteken: de punt achter een h1 of h2 wordt de roze stip. Het laatste woord blijft aan de punt vastzitten.
+const withPunt = (html) => html.replace(/([^\s<>]+)\.(<\/h[12]>)/g, '<span class="nb">$1<span class="punt">.</span></span>$2');
 const SUFFIX = ' | googleadvertising.nl';
 const OG_IMAGE = '/assets/og-google-ads-uitbesteden.jpg'; // 1200 x 630, zie docs/vindbaarheid/01-techniek.md
 
@@ -153,8 +159,8 @@ ${file ? '' : `<meta property="og:url" content="${canonical}">\n`}<meta property
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/fonts/inter-latin-var-v20.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/big-shoulders-display-latin-var-v24.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/figtree-latin-var-v9.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bricolage-grotesque-latin-800-wdth-v9.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">${graph}</script>
 </head>
@@ -170,7 +176,7 @@ ${cookieBanner}</body>
 `;
   const target = file ? join(OUT, file) : join(OUT, path, 'index.html');
   mkdirSync(dirname(target), { recursive: true });
-  writeFileSync(target, html);
+  writeFileSync(target, withPunt(html));
   if (!noindex) pages.push(path);
 }
 
@@ -228,10 +234,10 @@ for (const c of cases) {
 </dl></section>
 <section class="section"><div class="wrap"><div class="prose narrow"><p class="first">${esc(c.situatie)}</p></div></div></section>
 <section class="section alt"><div class="wrap stack gap-lg"><div class="stack narrow"><p class="kicker">Aanpak</p><h2>Hoe we het aanpakten.</h2></div>
-<div class="grid g3">${c.aanpak.map(([h, p], i) => `<div class="card"><span class="step-no${i === 1 ? ' b' : i === 2 ? ' c' : ''}">Stap ${i + 1}</span><h3>${esc(h)}</h3><p>${esc(p)}</p></div>`).join('')}</div>
+<div class="grid g3">${c.aanpak.map(([h, p], i) => `<div class="card"><span class="step-no">Stap ${i + 1}</span><h3>${esc(h)}</h3><p>${esc(p)}</p></div>`).join('')}</div>
 </div></section>
 <section class="section"><div class="wrap stack gap-lg"><div class="stack narrow"><p class="kicker">Resultaten</p><h2>Wat het opleverde.</h2></div>
-<div class="grid g3">${c.resultaten.map((r, i) => { const col = cardAccents[i % cardAccents.length]; return `<article class="card" style="border-top:3px solid ${col}">${evidenceTag(r)}<h3 class="stat">${esc(r.label)}</h3>${sparkline(col)}<p>${esc(r.detail)}</p></article>`; }).join('')}</div>
+<div class="grid g3">${c.resultaten.map((r) => `<article class="card">${evidenceTag(r)}<h3 class="stat">${esc(r.label)}</h3><p>${esc(r.detail)}</p></article>`).join('')}</div>
 <p class="small">Bron: <a href="${c.bron}" target="_blank" rel="noopener">het projectoverzicht van Art of Advertising</a>.</p>
 </div></section>
 ${c.testimonial ? `<section class="section alt"><div class="wrap"><div class="answer"><p class="kicker">In hun woorden</p><p>“${esc(c.testimonial.quote)}”</p><p class="small">${esc(c.testimonial.naam)}, ${esc(c.testimonial.functie)}</p></div></div></section>` : ''}
@@ -294,14 +300,14 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
     ['conversietracking-google-ads', 'Conversiemeting', 'GA4, Tag Manager en een koppeling met je CRM, zodat Google leert van echte klanten.'],
   ];
   const lb = (title, label, links, two) => `<nav class="linkbox" aria-label="${label}"><h3>${title}</h3><div${two ? ' class="two"' : ''}>${links.map(([t, h]) => `<a href="${h}">${esc(t)}</a>`).join('')}</div></nav>`;
-  const body = `<section class="alt hero"><div class="wrap">
+  const body = `<section class="hero"><div class="wrap">
 <div class="hero-text"><p class="kicker">Google Ads uitbesteden</p>
 <h1>Google Ads uitbesteden en meer halen uit hetzelfde budget.</h1>
 <p class="lead">Voor bedrijven in heel Nederland die al adverteren en weten dat er meer in zit. Eén vaste Google Ads specialist neemt je account over, stopt wat geld kost en bouwt uit wat klanten oplevert.</p>
 <div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="btn btn-lg btn-outline" href="/gratis-accountcheck/">Gratis accountcheck</a></div>
 <p class="small">Geen lange contracten: je kunt elke maand stoppen. Of <a href="tel:${site.phoneHref}">bel ${site.phone}</a>.</p>
 ${badge}</div>
-<div class="hero-card"><div><p class="title">Wat wil je uitbesteden?</p><p class="muted" style="font-size:15px">Kies waar je mee wilt starten. Je aanvraag staat in drie stappen klaar.</p></div>
+<div class="hero-card"><p class="prijsroos"><small>vanaf</small> <b>€ 199</b> <small>per maand</small></p><div><p class="title">Wat wil je uitbesteden?</p><p class="muted" style="font-size:15px">Kies waar je mee wilt starten. Je aanvraag staat in drie stappen klaar.</p></div>
 <div class="stack" style="gap:10px">
 <a class="choice" href="/aanvragen/?keuze=volledig"><span>Google Ads volledig uitbesteden</span>${arrow}</a>
 <a class="choice" href="/aanvragen/?keuze=overnemen"><span>Bestaand account laten overnemen</span>${arrow}</a>
@@ -315,11 +321,11 @@ ${badge}</div>
 </dl></section>
 
 <section class="section alt"><div class="wrap">
-<div class="stack narrow center"><p class="kicker">Waarom googleadvertising.nl</p><h2>Eén vaste specialist, wekelijks aan het werk, altijd inzichtelijk.</h2></div>
+<div class="stack narrow"><p class="kicker">Waarom googleadvertising.nl</p><h2>Eén vaste specialist, wekelijks aan het werk, altijd inzichtelijk.</h2></div>
 <div class="grid g3 pillars">
-<div class="pillar"><span class="pillar-icon a"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg></span><h3>Eén vast aanspreekpunt</h3><p>Geen accountmanager die doorverwijst. Je werkt rechtstreeks met <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${site.specialist.name}</a> of een vaste specialist uit zijn team, die zelf in je account zit.</p></div>
-<div class="pillar"><span class="pillar-icon b"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-14 5.3L4 16"/><path d="M4 20v-4h4"/></svg></span><h3>Wekelijks geoptimaliseerd</h3><p>Elke week wordt er bijgestuurd op wat echt werkt, niet pas aan het eind van het kwartaal.</p></div>
-<div class="pillar"><span class="pillar-icon c"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-7"/></svg></span><h3>Transparante rapportage</h3><p>Je ziet precies wat elke euro oplevert, tot aan de aanvraag of order.</p></div>
+<div class="pillar">${roosVast}<h3>Eén vast aanspreekpunt</h3><p>Geen accountmanager die doorverwijst. Je werkt rechtstreeks met <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${site.specialist.name}</a> of een vaste specialist uit zijn team, die zelf in je account zit.</p></div>
+<div class="pillar">${roosWekelijks}<h3>Wekelijks geoptimaliseerd</h3><p>Elke week wordt er bijgestuurd op wat echt werkt, niet pas aan het eind van het kwartaal.</p></div>
+<div class="pillar">${roosVizier}<h3>Transparante rapportage</h3><p>Je ziet precies wat elke euro oplevert, tot aan de aanvraag of order.</p></div>
 </div>
 </div></section>
 
@@ -336,8 +342,8 @@ ${badge}</div>
 ${photo('google-ads-specialist-legt-aanpak-uit', 'Google Ads specialist legt de aanpak uit op kantoor', '(min-width: 900px) 400px, calc(100vw - 48px)', { style: 'aspect-ratio:3/2;object-position:50% 40%' })}</div>
 <ol class="steps grid g3">
 <li class="card"><span class="step-no">Stap 1</span><h3>Intake en accountcheck.</h3><p>We lopen je huidige account door: waar lekt budget weg, welke campagnes leveren klanten op en wat is een realistisch doel. Mkb-bedrijven kunnen na de intake direct aansluiten.</p></li>
-<li class="card"><span class="step-no b">Stap 2</span><h3>Opzet en meting.</h3><p>Campagnestructuur, zoekwoorden, advertenties en uitsluitingen. De conversiemeting koppelen we aan je formulieren, telefoon en waar mogelijk je CRM.</p></li>
-<li class="card"><span class="step-no c">Stap 3</span><h3>Wekelijks bijsturen.</h3><p>Je vaste specialist werkt elke week in het account en bespreekt maandelijks met je de aanvragen, de kosten per aanvraag en wat er de komende maand verandert.</p></li>
+<li class="card"><span class="step-no">Stap 2</span><h3>Opzet en meting.</h3><p>Campagnestructuur, zoekwoorden, advertenties en uitsluitingen. De conversiemeting koppelen we aan je formulieren, telefoon en waar mogelijk je CRM.</p></li>
+<li class="card"><span class="step-no">Stap 3</span><h3>Wekelijks bijsturen.</h3><p>Je vaste specialist werkt elke week in het account en bespreekt maandelijks met je de aanvragen, de kosten per aanvraag en wat er de komende maand verandert.</p></li>
 </ol><div><a class="btn" href="/gratis-accountcheck/">Start met een accountcheck</a></div>
 </div></section>
 
@@ -358,7 +364,7 @@ ${photo('google-ads-team-aan-het-werk', 'Het Google Ads team aan het werk op kan
 </div></section>
 
 <section class="section" id="vergelijken"><div class="wrap stack gap-lg">
-<div class="stack narrow"><div class="divider-accent"></div><p class="kicker">Zelf doen of uitbesteden</p><h2>Google Ads zelf doen, een freelancer of een bureau?</h2></div>
+<div class="stack narrow"><p class="kicker">Zelf doen of uitbesteden</p><h2>Google Ads zelf doen, een freelancer of een bureau?</h2></div>
 <div class="table-box"><table class="compare"><thead><tr><td></td><th scope="col">Zelf doen</th><th scope="col">Freelancer</th><th scope="col" class="us">Uitbesteden aan ons</th></tr></thead><tbody>
 <tr><th scope="row">Past bij</th><td>Klein budget en tijd om het te leren</td><td>Eén kanaal, weinig afstemming nodig</td><td class="us">Campagnes die aantoonbaar omzet moeten opleveren</td></tr>
 <tr><th scope="row">Jouw tijd</th><td>Wekelijks zelf in het account</td><td>Briefen en controleren</td><td class="us">Eén overleg per maand</td></tr>
@@ -371,7 +377,7 @@ ${photo('google-ads-team-aan-het-werk', 'Het Google Ads team aan het werk op kan
 <section class="section dark" id="resultaten"><div class="wrap stack gap-lg">
 <div class="stack narrow"><p class="kicker">Resultaten</p><h2>Wat Google Ads uitbesteden opleverde voor onze klanten.</h2></div>
 <div class="grid g3">
-${cases.map((c, i) => { const r = c.resultaten[0]; const col = cardAccents[i % cardAccents.length]; return `<a class="card" href="/klantcases/${c.slug}/" style="border-top:3px solid ${col}"><p class="who">${esc(c.name)}</p><h3 class="stat">${esc(r.label)}</h3>${sparkline(col)}<p>${esc(r.detail)}</p></a>`; }).join('')}
+${cases.map((c) => { const r = c.resultaten[0]; return `<a class="card" href="/klantcases/${c.slug}/"><p class="who">${esc(c.name)}</p><h3 class="stat">${esc(r.label)}</h3><p>${esc(r.detail)}</p></a>`; }).join('')}
 </div><div><a class="link-strong" href="/klantcases/">Bekijk alle klantcases</a></div></div></section>
 
 <section class="section" id="kantoor"><div class="wrap split">
@@ -411,7 +417,7 @@ ${photo('google-ads-specialist-aan-de-telefoon', 'Google Ads specialist aan de t
 <form class="form-layout" id="aanvraag" data-wa="${site.whatsapp}" novalidate>
 <div class="form-main">
 <fieldset><legend><span class="tag">Stap 1</span><span class="t">Wat wil je uitbesteden?</span><span class="muted" style="font-size:15px">Meerdere keuzes mogelijk.</span></legend>
-<div class="opts">${opts.map(([v, l, d]) => `<label class="opt"><input type="checkbox" name="keuze" value="${esc(l)}" data-key="${v}"><span class="box"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>${l}</b><small>${d}</small></span></label>`).join('')}</div>
+<div class="opts">${opts.map(([v, l, d]) => `<label class="opt"><input type="checkbox" name="keuze" value="${esc(l)}" data-key="${v}"><span class="box"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>${l}</b><small>${d}</small></span></label>`).join('')}</div>
 <p class="err" data-err="keuze" hidden>Kies minimaal één onderdeel.</p></fieldset>
 <fieldset><legend><span class="tag">Stap 2</span><span class="t">Hoe sta je er nu voor?</span></legend>
 <div class="stack" style="gap:10px"><p class="q" id="q-account">Heb je al een Google Ads account?</p><div class="pills" role="group" aria-labelledby="q-account">${pills('account', ['Ja, het loopt', 'Ja, maar het staat stil', 'Nee, nog niet'])}</div></div>
