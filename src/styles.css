@@ -276,10 +276,17 @@ a{text-decoration-thickness:1.5px}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(24,38,56,.93) 0%,rgba(24,38,56,.8) 42%,rgba(24,38,56,.4) 100%)}
 .hero .wrap{position:relative;z-index:1;padding-block:84px 92px;gap:44px 64px;align-items:center}
 .hero h1{font-size:clamp(34px,4.6vw,56px);line-height:1.08}
-.hero .kicker{color:#BFD8F7}
+.hero .kicker{align-self:flex-start;background:var(--accent);color:#fff;padding:7px 14px;border-radius:8px}
+.ster{color:#F5B301}
+.site-footer .ster{color:#D99A00}
 .hero .lead{color:#E8EDF3;max-width:580px}
 .hero .checks{font-size:16px;color:#fff}
-.hero .checks svg{filter:brightness(0) invert(1)}
+.hero .checks svg{display:none}
+.hero .checks li{align-items:center}
+.hero .checks li::before{content:"";flex:none;width:12px;height:12px;border-radius:50%;background:#4285F4}
+.hero .checks li:nth-child(2)::before{background:#EA4335}
+.hero .checks li:nth-child(3)::before{background:#FBBC05}
+.hero .checks li:nth-child(4)::before{background:#34A853}
 .hero .trust{font-size:15px;color:#D5DBE3}
 .hero .trust a{color:#fff}
 .hero-card{flex:1 1 380px;max-width:440px;margin-top:0;border:0;border-radius:16px;padding:28px;color:var(--ink);box-shadow:0 24px 60px -28px rgba(0,0,0,.55)}

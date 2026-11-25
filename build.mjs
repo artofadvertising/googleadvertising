@@ -18,7 +18,7 @@ const logo = `<a class="logo" href="/" aria-label="googleadvertising.nl, naar ho
 const chat = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-5A8.5 8.5 0 1 1 21 11.5z"/></svg>';
 const waHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent('Hoi, ik wil mijn Google Ads account vrijblijvend laten analyseren. Mijn website is: ')}`;
 const waBtn = (label = 'App ons via WhatsApp', cls = '') => `<a class="btn wa ${cls}" href="${waHref}" target="_blank" rel="noopener">${chat}${label}</a>`;
-const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner<br><a href="${site.reviews.url}" target="_blank" rel="noopener">★ ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></span></div>`;
+const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner<br><a href="${site.reviews.url}" target="_blank" rel="noopener"><span class="ster" aria-hidden="true">★</span> ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></span></div>`;
 const list = (items) => `<ul class="checks col">${items.map((i) => `<li>${check}<span>${esc(i)}</span></li>`).join('')}</ul>`;
 const evidenceTag = (r) => `<span class="tag">${r.evidence === 'gemeten' ? 'Gemeten in' : 'Terug te zien in'} ${esc(r.scope)}</span>`;
 // Drie varianten op de roos voor de drie pijlers op de homepage.
@@ -272,7 +272,7 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
 <h1>Google Ads uitbesteden? Laat je account eerst vrijblijvend analyseren.</h1>
 <p class="lead">Heb je een Google Ads account en het idee dat het beter kan? Een vaste specialist kijkt mee en laat zien waar budget weglekt en wat er nog in zit. Daarna beslis jij of je het beheer uitbesteedt.</p>
 <ul class="checks"><li>${check}<span>Vrijblijvend starten</span></li><li>${check}<span>Maandelijks opzegbaar</span></li><li>${check}<span>Het account blijft van jou</span></li><li>${check}<span>Eén vast aanspreekpunt</span></li></ul>
-<p class="trust">Officieel Google Partner · <a href="${site.reviews.url}" target="_blank" rel="noopener">★ ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></p>
+<p class="trust">Officieel Google Partner · <a href="${site.reviews.url}" target="_blank" rel="noopener"><span class="ster" aria-hidden="true">★</span> ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></p>
 </div>
 <form class="hero-card" id="accountcheck" data-wa="${site.whatsapp}" novalidate>
 <div><p class="title">Vrijblijvende accountanalyse</p><p class="muted" style="font-size:15px">Je aanvraag gaat via WhatsApp naar ons. Binnen 1 dag reactie.</p></div>
@@ -295,7 +295,7 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
 <section class="section alt"><div class="wrap">
 <div class="stack narrow"><p class="kicker">Waarom googleadvertising.nl</p><h2>Eén vaste specialist, wekelijks aan het werk, altijd inzichtelijk.</h2></div>
 <div class="grid g3 pillars">
-<div class="pillar">${roosVast}<h3>Eén vast aanspreekpunt</h3><p>Geen accountmanager die doorverwijst. Je werkt rechtstreeks met <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${site.specialist.name}</a> of een vaste specialist uit zijn team, die zelf in je account zit.</p></div>
+<div class="pillar">${roosVast}<h3>Eén vast aanspreekpunt</h3><p>Geen accountmanager die doorverwijst. Je werkt rechtstreeks met een vaste specialist uit ons team, die zelf in je account zit.</p></div>
 <div class="pillar">${roosWekelijks}<h3>Wekelijks geoptimaliseerd</h3><p>Elke week wordt er bijgestuurd op wat echt werkt, niet pas aan het eind van het kwartaal.</p></div>
 <div class="pillar">${roosVizier}<h3>Transparante rapportage</h3><p>Je ziet precies wat elke euro oplevert, tot aan de aanvraag of order.</p></div>
 </div>
