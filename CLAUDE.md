@@ -16,4 +16,5 @@ Afspraken die uit fase 4 en 6 komen:
 
 - Foto's: zet de JPG (2000 breed) in `public/assets`, draai `tools/convert-images.mjs` (zie `docs/vindbaarheid/06-performance.md`) en gebruik in `build.mjs` de helper `photo()`. Geen losse `<img>` voor foto's.
 - Fonts staan in `public/fonts/` en worden in `src/styles.css` geladen. Geen externe stylesheets of scripts toevoegen zonder dat de privacyverklaring en fase 7 daarop zijn aangepast.
+- Meting (fase 7): `site.gtm` in `content.mjs` is de enige schakelaar. Leeg betekent geen tags, geen cookievenster en geen `/cookies/`. Nieuwe tags gaan via Tag Manager en krijgen daar toestemming vereist; pas `/cookies/` aan als er iets bijkomt dat cookies zet.
 - Structured data wordt in `build.mjs` opgebouwd uit de inhoud. Wat in de markup staat, staat ook zichtbaar op de pagina; geen `AggregateRating` op basis van Google-reviews.

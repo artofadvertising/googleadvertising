@@ -9,6 +9,44 @@ const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-');
 const bySlug = Object.fromEntries(spokes.map((s) => [s.slug, s]));
 const byCaseSlug = Object.fromEntries(cases.map((c) => [c.slug, c]));
 const pages = [];
+
+// ---------- meting en toestemming (fase 7) ----------
+// Alles hieronder staat alleen aan als site.gtm in content.mjs is ingevuld.
+if (site.gtm && !/^GTM-[A-Z0-9]{4,}$/.test(site.gtm)) throw new Error(`site.gtm is geen geldige container-ID: ${site.gtm}`);
+const CONSENT_KEY = 'gadv_consent'; // zelfde sleutel als in src/consent.js
+// Consent Mode v2: standaard alles geweigerd, vóór Tag Manager. Een eerdere keuze (maximaal een jaar oud) wordt hersteld.
+const consentHead = site.gtm ? `<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'granted',security_storage:'granted'});
+try{var c=JSON.parse(localStorage.getItem('${CONSENT_KEY}'));if(c&&c.t&&Date.now()-c.t<31536e6){var a=!!c.analytics,m=!!c.marketing;if(a||m){gtag('consent','update',{analytics_storage:a?'granted':'denied',ad_storage:m?'granted':'denied',ad_user_data:m?'granted':'denied',ad_personalization:m?'granted':'denied'});}}}catch(e){}
+</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${site.gtm}');</script>
+` : '';
+const gtmNoscript = site.gtm ? `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${site.gtm}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n` : '';
+const cookieBanner = site.gtm ? `<div class="cookie" id="cookie" hidden>
+<div class="cookie-dialog" role="dialog" aria-modal="true" aria-labelledby="cookie-kop" aria-describedby="cookie-tekst">
+<div data-view="main">
+<img class="cookie-logo" src="/favicon.svg" alt="" width="40" height="40">
+<h2 class="cookie-kop" id="cookie-kop">Jouw privacy, jouw keuze.</h2>
+<p class="cookie-tekst" id="cookie-tekst">We gebruiken cookies van Google Analytics om te zien hoe deze website wordt gebruikt, zodat we hem kunnen verbeteren. Dat doen we alleen met jouw toestemming. Noodzakelijke cookies staan altijd aan. Lees meer op de pagina over <a href="/cookies/">cookies</a>.</p>
+<div class="cookie-btns"><button type="button" class="btn" data-consent="accept-all">Alles accepteren</button><button type="button" class="btn btn-outline" data-consent="reject">Alleen noodzakelijk</button></div>
+<button type="button" class="cookie-link" data-consent-view="prefs">Voorkeuren aanpassen</button>
+</div>
+<div data-view="prefs" hidden>
+<h2 class="cookie-kop">Cookievoorkeuren.</h2>
+<p class="cookie-tekst">Kies per categorie wat je toestaat. Je kunt dit later altijd wijzigen via "Cookie-instellingen" onderaan de pagina.</p>
+<ul class="cookie-cats">
+<li><div class="cookie-cat-text"><strong>Noodzakelijk</strong><span>Onthoudt je cookiekeuze en zorgt dat de website werkt. Altijd aan.</span></div><input type="checkbox" class="switch" checked disabled aria-label="Noodzakelijk, altijd aan"></li>
+<li><div class="cookie-cat-text"><label for="c-analytics"><strong>Statistieken</strong></label><span>Google Analytics: bezoekersaantallen, herkomst, klikken op het telefoonnummer en verstuurde aanvragen. Cookies van Google.</span></div><input type="checkbox" class="switch" id="c-analytics"></li>
+<li><div class="cookie-cat-text"><label for="c-marketing"><strong>Marketing</strong></label><span>Advertentiecookies, bijvoorbeeld voor Google Ads. Op dit moment niet in gebruik; je keuze geldt zodra we gaan adverteren.</span></div><input type="checkbox" class="switch" id="c-marketing"></li>
+</ul>
+<div class="cookie-btns"><button type="button" class="btn" data-consent="save">Keuze opslaan</button><button type="button" class="btn btn-outline" data-consent="accept-all">Alles accepteren</button></div>
+<button type="button" class="cookie-link" data-consent-view="main">Terug</button>
+</div>
+</div>
+</div>
+<script src="/consent.js" defer></script>
+` : '';
 rmSync(OUT, { recursive: true, force: true });
 
 // Merkstijl Raak: de roos (ring met stip) is het merkteken en vervangt het vinkje in lijsten.
@@ -80,7 +118,7 @@ ${col('Diensten', 'Diensten', d)}${col('Voor wie', 'Doelgroepen', w)}${col('Goog
 <div><h2>Contact</h2><address><a class="hl" href="${site.companyUrl}">${site.company}</a><span>${site.street}</span><span>${site.zip} ${site.city}</span>${site.kvk ? `<span>KvK ${site.kvk}</span>` : ''}<a href="tel:${site.phoneHref}">${site.phone}</a><a href="/aanvragen/">Aanvraagformulier</a></address></div>
 </div>
 <div class="f-bottom"><div class="row"><p>© ${new Date().getFullYear()} googleadvertising.nl. Website door <a class="hl" href="${site.companyUrl}">Art of Advertising</a>.</p>
-<div><a href="${site.companyUrl}/privacyverklaring">Privacyverklaring</a><a href="${site.companyUrl}/algemene-voorwaarden">Algemene voorwaarden</a><a href="${site.companyUrl}/cookieverklaring">Cookies</a></div></div>
+<div><a href="${site.companyUrl}/privacyverklaring">Privacyverklaring</a><a href="${site.companyUrl}/algemene-voorwaarden">Algemene voorwaarden</a>${site.gtm ? '<a href="/cookies/">Cookies</a><a href="/cookies/" data-cookie-settings>Cookie-instellingen</a>' : `<a href="${site.companyUrl}/cookieverklaring">Cookies</a>`}</div></div>
 <p>Onafhankelijke website, niet verbonden aan Google. Google Ads is een handelsmerk van Google LLC.</p></div>
 </div></footer>
 <div class="mbar">${waBtn('App ons')}<a class="btn btn-outline" href="tel:${site.phoneHref}">Bel ons</a></div>`;
@@ -109,7 +147,7 @@ function page({ path, title, desc, body, ld = [], noindex = false, scripts = '',
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)}</title>
+${consentHead}<title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 ${file ? '' : `<link rel="canonical" href="${canonical}">\n`}${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">'}
 <meta property="og:type" content="website">
@@ -131,13 +169,13 @@ ${file ? '' : `<meta property="og:url" content="${canonical}">\n`}<meta property
 <script type="application/ld+json">${graph}</script>
 </head>
 <body>
-${header()}
+${gtmNoscript}${header()}
 <main id="inhoud">
 ${body}
 </main>
 ${footer()}
 ${scripts}
-</body>
+${cookieBanner}</body>
 </html>
 `;
   const target = file ? join(OUT, file) : join(OUT, path, 'index.html');
@@ -411,7 +449,7 @@ ${badge}
 </aside>
 </form></div></div></section>`;
   page({ path: '/aanvragen/', title: 'Voorstel aanvragen voor Google Ads | googleadvertising.nl', desc: 'Vraag in drie stappen een voorstel aan voor het uitbesteden van je Google Ads. Je krijgt binnen 1 dag reactie van een specialist.', body, scripts: '<script src="/form.js" defer></script>' });
-  page({ path: '/aanvragen/bedankt/', noindex: true, title: 'Aanvraag verstuurd | googleadvertising.nl', desc: 'Je aanvraag is ontvangen.', body: `<section class="alt"><div class="wrap" style="padding-block:56px 88px"><div class="done" role="status"><h1 style="font-size:clamp(30px,4vw,40px)">Bijna geregeld.</h1><p class="lead">Je aanvraag staat als bericht klaar in WhatsApp. Druk daar op verzenden, dan neemt een specialist binnen 1 dag contact met je op om een intake in te plannen.</p><ol class="muted" style="padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Aanvraag: je verstuurt het WhatsApp-bericht.</li><li>Intake en accountcheck: we kijken in je account of naar je markt.</li><li>Voorstel: je ontvangt aanpak, budgetadvies en prijs.</li></ol><div class="actions"><a class="link-strong" href="/">Terug naar home</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div></div></div></section>` });
+  page({ path: '/aanvragen/bedankt/', noindex: true, title: 'Aanvraag verstuurd | googleadvertising.nl', desc: 'Je aanvraag is ontvangen.', body: `<section class="alt"><div class="wrap" style="padding-block:56px 88px"><div class="done" role="status"><h1 style="font-size:clamp(30px,4vw,40px)">Bijna geregeld.</h1><p class="lead">Je aanvraag staat als bericht klaar in WhatsApp. Druk daar op verzenden, dan neemt een specialist binnen 1 dag contact met je op om een intake in te plannen.</p><ol class="muted" style="padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Aanvraag: je verstuurt het WhatsApp-bericht.</li><li>Intake en accountcheck: we kijken in je account of naar je markt.</li><li>Voorstel: je ontvangt aanpak, budgetadvies en prijs.</li></ol><div class="actions"><a class="link-strong" href="/">Terug naar home</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div></div></div></section>`, scripts: `<script>(function(){var v=new URLSearchParams(location.search).get('via');if(v==='aanvraag'||v==='accountcheck'){window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'form_submit_ok',form_name:v});}})();</script>` });
 }
 
 // ---------- gratis accountcheck (laagdrempelig, 3 velden) ----------
@@ -437,6 +475,34 @@ ${badge}
   page({ path: '/gratis-accountcheck/', title: 'Gratis Google Ads accountcheck aanvragen | googleadvertising.nl', desc: 'Vraag in drie velden een gratis Google Ads accountcheck aan. Geen verplichtingen, binnen 1 dag reactie van een specialist.', body, scripts: '<script src="/form.js" defer></script>' });
 }
 
+// ---------- cookies (alleen als er tags draaien) ----------
+if (site.gtm) {
+  const trail = [['Home', '/'], ['Cookies', '/cookies/']];
+  const rows = [
+    [CONSENT_KEY, `${site.company} (lokale opslag)`, 'Onthoudt je cookiekeuze. Noodzakelijk, geen toestemming nodig', '1 jaar'],
+    ['_ga', 'Google Analytics', 'Onderscheidt bezoekers van elkaar met een willekeurig nummer. Alleen na toestemming', '2 jaar'],
+    ['_ga_*', 'Google Analytics', "Houdt bij welke pagina's je in één bezoek bekijkt. Alleen na toestemming", '2 jaar'],
+  ];
+  const body = `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><h1>Cookies op googleadvertising.nl</h1><p class="lead">Welke cookies deze website gebruikt, waarvoor, en hoe je je keuze aanpast.</p><div class="actions"><a class="btn" href="/cookies/" data-cookie-settings>Cookie-instellingen openen</a></div></div></div></section>
+<section class="section"><div class="wrap"><div class="prose narrow">
+<h2 id="cookies" style="margin-top:0">Cookies en externe diensten</h2>
+<p>Deze website gebruikt Google Tag Manager en Google Analytics 4 (Google Ireland Limited, Ierland; moederbedrijf Google LLC, Verenigde Staten). Google Tag Manager is een hulpmiddel waarmee we scripts op de website beheren; het plaatst zelf geen cookies. Met Google Analytics zien we hoeveel bezoekers de website heeft, waar zij vandaan komen, of zij op het telefoonnummer klikken en of zij een aanvraag versturen. Daarmee verbeteren we de website.</p>
+<h2>Toestemming</h2>
+<p>Bij je eerste bezoek vraagt een venster welke cookies je toestaat: "Alles accepteren", "Alleen noodzakelijk", of per categorie via "Voorkeuren aanpassen" (statistieken en marketing). Google Analytics plaatst pas cookies nadat je statistieken hebt toegestaan. Sta je ze niet toe, dan plaatst Google Analytics geen cookies en worden er geen gegevens over jou opgeslagen; Google ontvangt dan alleen anonieme signalen die niet tot jou herleidbaar zijn, om het totale aantal bezoeken te schatten (Google Consent Mode).</p>
+<p>Marketingcookies gebruiken we op dit moment niet; je keuze daarvoor geldt zodra we gaan adverteren. Je keuze bewaren we een jaar in de opslag van je browser, zodat we het niet bij elk bezoek opnieuw vragen. Je kunt je keuze altijd wijzigen via "Cookie-instellingen" onderaan elke pagina.</p>
+<h2>Overzicht</h2>
+<div class="table-box"><table><thead><tr><th scope="col">Naam</th><th scope="col">Van</th><th scope="col">Doel</th><th scope="col">Bewaartermijn</th></tr></thead><tbody>${rows.map(([n, v, d, t]) => `<tr><th scope="row">${esc(n)}</th><td>${esc(v)}</td><td>${esc(d)}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></div>
+<h2>Instellingen in Google Analytics</h2>
+<p>In Google Analytics hebben we het delen van gegevens met andere Google-diensten en de advertentiefuncties uitgeschakeld, worden IP-adressen niet opgeslagen en bewaren we de gegevens maximaal 14 maanden. Met Google is een verwerkersovereenkomst van toepassing; Google is aangesloten bij het EU-VS Data Privacy Framework.</p>
+<p>Gaan we in de toekomst adverteren, bijvoorbeeld met Google Ads, dan plaatsen we die cookies ook alleen na jouw toestemming en passen we deze pagina aan.</p>
+<h2>Aanvragen via WhatsApp</h2>
+<p>Het aanvraagformulier opent een vooringevuld bericht in WhatsApp. Pas als je dat bericht zelf verstuurt, ontvangen wij je gegevens; de website slaat ze niet op.</p>
+<h2>Meer over privacy</h2>
+<p>Googleadvertising.nl is een label van ${esc(site.company)}. Hoe wij verder met persoonsgegevens omgaan en welke rechten je hebt, lees je in de <a href="${site.companyUrl}/privacyverklaring">privacyverklaring van Art of Advertising</a>.</p>
+</div></div></section>`;
+  page({ path: '/cookies/', title: 'Cookies op googleadvertising.nl', desc: 'Welke cookies googleadvertising.nl gebruikt, waarvoor ze dienen, hoe lang ze blijven staan en hoe je je cookiekeuze op elk moment kunt aanpassen.', body, ld: [crumbLd(trail)] });
+}
+
 // ---------- 404 ----------
 page({
   path: '/404', file: '404.html', noindex: true, title: 'Pagina niet gevonden | googleadvertising.nl', desc: 'Deze pagina bestaat niet of is verplaatst.',
@@ -448,6 +514,7 @@ page({
 // ---------- statische bestanden ----------
 cpSync('src/styles.css', join(OUT, 'styles.css'));
 cpSync('src/form.js', join(OUT, 'form.js'));
+if (site.gtm) cpSync('src/consent.js', join(OUT, 'consent.js'));
 cpSync('public', OUT, { recursive: true });
 const all = pages.sort((a, b) => a.length - b.length || a.localeCompare(b));
 writeFileSync(join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${all.map((p) => `<url><loc>${site.url}${p}</loc><lastmod>${site.updated}</lastmod></url>`).join('\n')}\n</urlset>\n`);

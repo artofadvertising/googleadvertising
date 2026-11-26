@@ -48,7 +48,7 @@
     lines.push('', 'Naam: ' + val('naam'), 'Bedrijf: ' + val('bedrijf'), 'E-mail: ' + val('email'), 'Telefoon: ' + val('telefoon'));
     if (val('opmerking')) lines.push('', 'Opmerking: ' + val('opmerking'));
     window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
-    location.href = '/aanvragen/bedankt/';
+    location.href = '/aanvragen/bedankt/?via=aanvraag';
   });
 })();
 
@@ -82,6 +82,6 @@
     var val = function (k) { return String(d.get(k) || '').trim(); };
     var lines = ['Nieuwe accountcheck-aanvraag via googleadvertising.nl', '', 'Naam: ' + val('naam'), 'E-mail: ' + val('email'), 'Website: ' + val('website')];
     window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
-    location.href = '/aanvragen/bedankt/';
+    location.href = '/aanvragen/bedankt/?via=accountcheck';
   });
 })();
