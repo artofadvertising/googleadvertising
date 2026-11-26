@@ -39,7 +39,7 @@ Actie: een tweede eigenaar toevoegen in Search Console (Instellingen, Gebruikers
 | # | Wie | Wat | Waar | Hoe we controleren dat het klaar is |
 |---|---|---|---|---|
 | 1 | Bureau | Tweede eigenaar toevoegen in Search Console | search.google.com/search-console, Instellingen, Gebruikers en rechten | Twee eigenaren in de lijst |
-| 2 | Claude | Over één tot drie dagen de URL-inspectie herhalen | Search Console, URL-inspectie | "URL staat in Google" op de homepage |
+| 2 | Claude | Gedaan op 26-11-2026: `site:googleadvertising.nl` geeft vier pagina's met resultaten; op `googleadvertising.nl` staat de homepage bovenaan | google.nl | Gezien op 26-11-2026 |
 | 3 | Claude | Controleren of Bing de sitemap heeft verwerkt | bing.com/webmasters, Sitemaps | Status "Success" met 42 URL's |
 | 4 | Bureau | Tag Manager-container aanmaken en de container-ID doorgeven | tagmanager.google.com | `curl -sS https://googleadvertising.nl/ \| grep -c GTM-` geeft 2 |
 | 5 | Bureau | Keuze statistieken vastleggen (bureau-standaard: GA4 via Tag Manager met eigen cookiebanner) | `STATUS.md` | Keuze staat in `STATUS.md`; uitvoering in fase 7 |
@@ -50,7 +50,7 @@ Punt 4 en 5 hangen samen met fase 7: er mag geen tag live die cookies zet zonder
 
 ## Definition of done
 
-- [ ] Homepage staat in Google en Bing (aangevraagd op 24-11-2026; opname duurt meestal één tot drie dagen)
+- [ ] Homepage staat in Google en Bing (Google: ja, gezien op 26-11-2026; Bing: nog niet gecontroleerd)
 - [x] Sitemap geslaagd in Google (42 pagina's)
 - [ ] Sitemap geslaagd in Bing (ingediend, in behandeling)
 - [ ] Tag Manager laadt
