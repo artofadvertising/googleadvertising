@@ -1,6 +1,6 @@
 # Fase 7: meting en consent
 
-Datum: 24 november 2026. Status: Tag Manager en Google Analytics zijn aangemaakt en ingericht, de container is gepubliceerd en de container-ID staat in `content.mjs`. Getest op de preview van de branch met de echte container: consent-test en alle conversies geslaagd. Nog niet live: dat gebeurt bij het samenvoegen van de PR. Daarna de test op productie herhalen.
+Datum: 26 november 2026. Status: live. De PR is op 26-11-2026 samengevoegd (merge-commit `56773c4`); cookievenster, Consent Mode v2 en Tag Manager draaien op productie en de consent-test is daar herhaald en geslaagd. De conversies (`contact_phone`, `form_submit`) zijn op de preview getest met dezelfde gepubliceerde container.
 
 ## Keuze
 
@@ -71,6 +71,27 @@ Alle drie: "geen aanvullende toestemming nodig"; de tags lezen Consent Mode zelf
 
 Dat komt overeen met wat `/cookies/` belooft. De test heeft een handvol testgebeurtenissen in de nieuwe property gezet (vanaf het preview-adres).
 
+## Getest op productie (26-11-2026)
+
+| Stap | Uitkomst |
+|---|---|
+| `curl` op de homepage | Container-ID staat er twee keer in (head en noscript); Consent Mode staat vóór Tag Manager; geen `set-cookie`-header |
+| Eerste bezoek, nog geen keuze | Venster verschijnt; geen enkele cookie; één cookieloos signaal naar Google met alle toestemming geweigerd |
+| "Alleen noodzakelijk" | Geen enkele cookie; keuze opgeslagen als geweigerd |
+| "Cookie-instellingen", "Alles accepteren" | `_ga` en `_ga_*` gezet; keuze opgeslagen als toegestaan |
+| Fase 1 | Redirects, 404-pagina en vijf beveiligingsheaders in orde; 43 van 43 sitemap-adressen 200 (`/cookies/` is erbij gekomen) |
+
+Lighthouse 12, mobiel, productie, met Tag Manager:
+
+| Pagina | Performance | Toegankelijkheid | Best practices | SEO | LCP | TBT | Gewicht |
+|---|---|---|---|---|---|---|---|
+| `/` | 97 | 100 | 100 | 100 | 2,6 s | 40 ms | 450 kB |
+| `/google-ads-beheer/` | 100 | 100 | 100 | 100 | 1,3 s | 80 ms | 405 kB |
+
+Tag Manager en de Google-tag wegen samen ruim 300 kB en kosten ongeveer 80 ms blokkeertijd. De LCP van de homepage (2,6 s) ligt net boven de grens van 2,5 s; het LCP-element is sinds het nieuwe ontwerp de foto achter de hero. Een `preload` voor die foto is de eerste stap om dat terug te brengen (fase 6).
+
+Het cookievenster is tussentijds twee keer omgezet naar een nieuw ontwerp dat op main was gekomen (merkstijl Raak, daarna de zachtere variant met blauw); het volgt de kleuren, knoppen en fonts van de site.
+
 ## Lokaal getest (24-11-2026)
 
 Getest op de lokale build met een test-ID als container (een lege container; er draaiden dus geen echte tags).
@@ -93,9 +114,9 @@ De test met echte tags staat hierboven.
 
 | # | Wie | Wat | Hoe we controleren dat het klaar is |
 |---|---|---|---|
-| 1 | Bureau | De PR samenvoegen, zodat de meting live gaat | `curl -sS https://googleadvertising.nl/ \| grep -c GTM-` geeft 2 |
-| 2 | Claude | Consent-test op productie herhalen: zonder toestemming geen `_ga`-cookie; na toestemming wel | `document.cookie` en de verzoeken naar Google |
-| 3 | Claude | Lighthouse opnieuw meten; Tag Manager kost laadtijd | Homepage blijft boven de 90 |
+| 1 | Bureau | Gedaan op 26-11-2026: PR samengevoegd | `curl -sS https://googleadvertising.nl/ \| grep -c GTM-` geeft 2 |
+| 2 | Claude | Gedaan op 26-11-2026: consent-test op productie geslaagd | Zie "Getest op productie" |
+| 3 | Claude | Gedaan op 26-11-2026: homepage 97, dienstpagina 100. Open: `preload` voor de hero-foto, zodat de LCP van de homepage weer onder 2,5 s komt | Lighthouse mobiel: LCP homepage onder 2,5 s |
 | 4 | Bureau | Intern verkeer uitsluiten: het IP-adres van kantoor opgeven in Analytics (Gegevensstreams, Tag-instellingen, Intern verkeer definiëren) en het filter op Actief zetten | Eigen bezoeken tellen niet mee |
 | 5 | Bureau | Zodra de eerste echte events binnen zijn: `contact_phone` en `form_submit` markeren als belangrijke gebeurtenis (Beheer, Gebeurtenissen) | Staan onder "Belangrijke gebeurtenissen" |
 | 6 | Bureau | Een tweede beheerder toevoegen in Tag Manager en Analytics | Twee gebruikers met beheerrechten |
@@ -106,7 +127,7 @@ Na het samenvoegen krijgt elke nieuwe bezoeker het cookievenster te zien en gaat
 ## Definition of done
 
 - [x] Alle conversies gemeten en getest (op de preview, met de gepubliceerde container)
-- [ ] Consent-test geslaagd op productie (op de preview geslaagd)
+- [x] Consent-test geslaagd op productie (26-11-2026)
 - [ ] `/cookies/` en de privacyverklaring kloppen met wat er daadwerkelijk laadt
 - [ ] Rapport zichtbaar voor het bureau
 - [x] Container gepubliceerd als versie met beschrijving
