@@ -50,24 +50,27 @@ const cookieBanner = site.gtm ? `<div class="cookie" id="cookie" hidden>
 rmSync(OUT, { recursive: true, force: true });
 
 // Merkstijl Raak: de roos (ring met stip) is het merkteken en vervangt het vinkje in lijsten.
-const check = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7.4" fill="none" stroke="#0B0B0B" stroke-width="2.2"/><circle cx="9" cy="9" r="3.2" fill="#FF2E63"/></svg>';
+const check = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7.4" fill="none" stroke="#1B2530" stroke-width="2.2"/><circle cx="9" cy="9" r="3.2" fill="#1F5FBF"/></svg>';
 const arrow = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
-const logo = `<a class="logo" href="/" aria-label="googleadvertising.nl, naar home"><span>googleadvertising<span class="roos">.</span>nl</span></a>`;
-const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner<br><a href="${site.reviews.url}" target="_blank" rel="noopener">★ ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></span></div>`;
+const logo = `<a class="logo" href="/" aria-label="googleadvertising.nl, naar home">googleadvertising<small>.nl</small></a>`;
+const chat = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-5A8.5 8.5 0 1 1 21 11.5z"/></svg>';
+const waHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent('Hoi, ik wil mijn Google Ads account vrijblijvend laten analyseren. Mijn website is: ')}`;
+const waBtn = (label = 'App ons via WhatsApp', cls = '') => `<a class="btn wa ${cls}" href="${waHref}" target="_blank" rel="noopener">${chat}${label}</a>`;
+const badge = `<div class="badge"><img src="/assets/google-partner-badge.png" alt="Google Partner" width="80" height="76" loading="lazy"><span>Officieel Google Partner<br><a href="${site.reviews.url}" target="_blank" rel="noopener"><span class="ster" aria-hidden="true">★</span> ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></span></div>`;
 const list = (items) => `<ul class="checks col">${items.map((i) => `<li>${check}<span>${esc(i)}</span></li>`).join('')}</ul>`;
 const evidenceTag = (r) => `<span class="tag">${r.evidence === 'gemeten' ? 'Gemeten in' : 'Terug te zien in'} ${esc(r.scope)}</span>`;
 // Drie varianten op de roos voor de drie pijlers op de homepage.
 const roosIcon = (inner) => `<svg class="pillar-icon" viewBox="0 0 52 52" aria-hidden="true">${inner}</svg>`;
-const roosVast = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#0B0B0B" stroke-width="4"/><circle cx="26" cy="26" r="8" fill="#FF2E63"/>');
-const roosWekelijks = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#0B0B0B" stroke-width="4" stroke-dasharray="14.75 5"/><circle cx="26" cy="26" r="8" fill="#FF2E63"/>');
-const roosVizier = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#0B0B0B" stroke-width="4"/><path d="M26 0v14M26 38v14M0 26h14M38 26h14" stroke="#0B0B0B" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#FF2E63"/>');
+const roosVast = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#1B2530" stroke-width="4"/><circle cx="26" cy="26" r="8" fill="#1F5FBF"/>');
+const roosWekelijks = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#1B2530" stroke-width="4" stroke-dasharray="14.75 5"/><circle cx="26" cy="26" r="8" fill="#1F5FBF"/>');
+const roosVizier = roosIcon('<circle cx="26" cy="26" r="22" fill="none" stroke="#1B2530" stroke-width="4"/><path d="M26 0v14M26 38v14M0 26h14M38 26h14" stroke="#1B2530" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#1F5FBF"/>');
 const byline = () => `<p class="small">Door <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${esc(site.specialist.name)}</a>, ${esc(site.specialist.role)} — bijgewerkt op ${new Date(site.updated).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</p>`;
 
 // Foto's staan als JPG (2000 breed) in public/assets; tools/convert-images.mjs maakt de AVIF- en WebP-varianten.
 const PHOTO_WIDTHS = [480, 800, 1200];
-const photo = (name, alt, sizes, { cls = 'photo', style = '' } = {}) => {
+const photo = (name, alt, sizes, { cls = 'photo', style = '', eager = false } = {}) => {
   const set = (ext) => PHOTO_WIDTHS.map((w) => `/assets/${name}-${w}.${ext} ${w}w`).join(', ');
-  return `<picture><source type="image/avif" srcset="${set('avif')}" sizes="${sizes}"><source type="image/webp" srcset="${set('webp')}" sizes="${sizes}"><img${cls ? ` class="${cls}"` : ''}${style ? ` style="${style}"` : ''} src="/assets/${name}.jpg" alt="${esc(alt)}" width="2000" height="1333" loading="lazy" decoding="async"></picture>`;
+  return `<picture><source type="image/avif" srcset="${set('avif')}" sizes="${sizes}"><source type="image/webp" srcset="${set('webp')}" sizes="${sizes}"><img${cls ? ` class="${cls}"` : ''}${style ? ` style="${style}"` : ''} src="/assets/${name}.jpg" alt="${esc(alt)}" width="2000" height="1333" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></picture>`;
 };
 
 const specialistLd = { '@type': 'Person', '@id': `${site.url}/#specialist`, name: site.specialist.name, jobTitle: 'Google Ads-specialist', url: site.companyUrl, sameAs: [site.specialist.linkedin], worksFor: { '@id': `${site.url}/#organisatie` } };
@@ -94,7 +97,8 @@ function header() {
 <header class="site-header"><div class="wrap">${logo}
 <nav class="nav" aria-label="Hoofdmenu">
 <a href="/#diensten">Diensten</a><a href="/#werkwijze">Werkwijze</a><a href="/google-ads-kosten/">Kosten</a><a href="/#resultaten">Resultaten</a><a href="/kennisbank/">Kennisbank</a>
-<a class="btn btn-sm" href="/aanvragen/">Voorstel aanvragen</a>
+<a class="wa-link" href="${waHref}" target="_blank" rel="noopener">${chat}App ons</a>
+<a class="btn btn-sm" href="/gratis-accountcheck/">Vrijblijvende analyse</a>
 </nav></div></header>`;
 }
 
@@ -105,10 +109,9 @@ function footer() {
   const r = cities.map(([c]) => [c, `/google-ads-specialist-${slugify(c)}/`]);
   const k = [['Google Ads uitbesteden', '/'], ['Klantcases', '/klantcases/'], ['Kennisbank', '/kennisbank/'], ...articles.slice(0, 4).map((a) => [a.name, `/kennisbank/${a.slug}/`]), ['Voorstel aanvragen', '/aanvragen/']];
   return `<footer class="site-footer"><div class="wrap">
-<p class="slogan">Elke klik raak<span class="punt">.</span></p>
 <div class="f-top">
 <div class="f-brand">${logo}<p>Google Ads uitbesteden aan een vaste specialist. Voor bedrijven in heel Nederland die meer uit hun advertentiebudget willen halen.</p>${badge}</div>
-<div class="f-cta"><p class="title">Meer uit je Google Ads halen?</p><p>Vanaf € 199 per maand, maandelijks opzegbaar. Je krijgt binnen 1 dag reactie.</p><a class="btn" href="/aanvragen/">Voorstel aanvragen</a><a href="tel:${site.phoneHref}"><strong>Of bel ${site.phone}</strong></a></div>
+<div class="f-cta"><p class="title">Laat je account vrijblijvend analyseren</p><p>Maandelijks opzegbaar. Je krijgt binnen 1 dag reactie.</p>${waBtn('App ons via WhatsApp')}<a href="tel:${site.phoneHref}"><strong>Of bel ${site.phone}</strong></a></div>
 </div>
 <div class="f-cols">
 ${col('Diensten', 'Diensten', d)}${col('Voor wie', 'Doelgroepen', w)}${col('Google Ads specialist in', 'Regio', r, true)}${col('Meer weten', 'Informatie', k)}
@@ -117,7 +120,8 @@ ${col('Diensten', 'Diensten', d)}${col('Voor wie', 'Doelgroepen', w)}${col('Goog
 <div class="f-bottom"><div class="row"><p>© ${new Date().getFullYear()} googleadvertising.nl. Website door <a class="hl" href="${site.companyUrl}">Art of Advertising</a>.</p>
 <div><a href="${site.companyUrl}/privacyverklaring">Privacyverklaring</a><a href="${site.companyUrl}/algemene-voorwaarden">Algemene voorwaarden</a>${site.gtm ? '<a href="/cookies/">Cookies</a><a href="/cookies/" data-cookie-settings>Cookie-instellingen</a>' : `<a href="${site.companyUrl}/cookieverklaring">Cookies</a>`}</div></div>
 <p>Onafhankelijke website, niet verbonden aan Google. Google Ads is een handelsmerk van Google LLC.</p></div>
-</div></footer>`;
+</div></footer>
+<div class="mbar">${waBtn('App ons')}<a class="btn btn-outline" href="tel:${site.phoneHref}">Bel ons</a></div>`;
 }
 
 // Merkteken: de punt achter een h1 of h2 wordt de roze stip. Het laatste woord blijft aan de punt vastzitten.
@@ -159,8 +163,8 @@ ${file ? '' : `<meta property="og:url" content="${canonical}">\n`}<meta property
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/fonts/figtree-latin-var-v9.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/bricolage-grotesque-latin-800-wdth-v9.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken-grotesk-latin-var-v5.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/schibsted-grotesk-latin-var-v5.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">${graph}</script>
 </head>
@@ -182,10 +186,10 @@ ${cookieBanner}</body>
 
 const crumbs = (trail) => `<nav class="crumbs" aria-label="Kruimelpad">${trail.map(([n, p], i) => (i < trail.length - 1 ? `<a href="${p}">${esc(n)}</a><span aria-hidden="true">/</span>` : `<span aria-current="page">${esc(n)}</span>`)).join('')}</nav>`;
 const faqBlock = (h2, faq) => `<section class="section" id="faq"><div class="wrap stack gap-lg"><div class="stack narrow"><p class="kicker">Veelgestelde vragen</p><h2>${esc(h2)}</h2></div>
-<div class="grid g2">${faq.map(([q, a]) => `<div class="card faq"><h3>${esc(q)}</h3><p>${esc(a)}</p></div>`).join('')}</div></div></section>`;
+<div class="qa-list">${faq.map(([q, a], i) => `<details class="qa"${i === 0 ? ' open' : ''}><summary><h3>${esc(q)}</h3></summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
 const related = (slugs) => `<div class="grid g4">${slugs.map((s) => bySlug[s]).map((s) => `<a class="card" href="/${s.slug}/"><h3>${esc(s.name)}</h3><p>${esc(s.desc.split('. ')[0])}.</p></a>`).join('')}</div>`;
-const band = (h2, btn = 'Voorstel aanvragen') => `<div class="band"><div class="txt"><h2>${esc(h2)}</h2><p class="muted">Vanaf € 199 per maand, inclusief Tag Manager. Geen minimumbudget, maandelijks opzegbaar en binnen 1 dag reactie.</p></div><div class="act"><a class="btn btn-lg" href="/aanvragen/">${btn}</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div></div>`;
-const pageHero = (trail, h1, intro, withBadge = true) => `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><h1>${esc(h1)}</h1><p class="lead">${esc(intro)}</p><div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div>${withBadge ? badge : ''}</div></div></section>`;
+const band = (h2) => `<div class="band"><div class="txt"><h2>${esc(h2)}</h2><p class="muted">Laat je account vrijblijvend analyseren. Maandelijks opzegbaar en binnen 1 dag reactie.</p></div><div class="act">${waBtn('App ons via WhatsApp')}<a class="btn btn-outline" href="/gratis-accountcheck/">Vul het formulier in</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div></div>`;
+const pageHero = (trail, h1, intro, withBadge = true) => `<section class="alt page-hero"><div class="wrap">${crumbs(trail)}<div class="inner"><h1>${esc(h1)}</h1><p class="lead">${esc(intro)}</p><div class="actions">${waBtn('Vrijblijvende analyse via WhatsApp')}<a class="btn btn-outline" href="/gratis-accountcheck/">Vul het formulier in</a></div></div></div></section>`;
 
 // ---------- dienst- en doelgroeppagina's ----------
 for (const s of spokes) {
@@ -288,6 +292,7 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
     ['Is Google Ads uitbesteden beter dan zelf doen?', 'Uitbesteden loont als het beheer je meer tijd kost dan je hebt, of als je niet kunt zien welke klikken klant worden. Bij een klein budget en genoeg tijd kun je het prima zelf doen.'],
     ['Wat is het verschil tussen Google Ads en SEO?', 'Met Google Ads betaal je per klik en sta je direct bovenaan. Met SEO betaal je niet per klik, maar duurt het maanden voor je op die posities staat. De twee vullen elkaar aan.'],
     ['Hoe vraag ik een voorstel aan?', 'Vul het aanvraagformulier in. Je kiest wat je wilt uitbesteden en laat je gegevens achter. Je aanvraag gaat als WhatsApp-bericht naar ons en je krijgt binnen 1 dag reactie.'],
+    ['Wat houdt de vrijblijvende analyse in?', 'Een specialist kijkt mee in je bestaande Google Ads account en laat zien waar budget weglekt en wat er beter kan. Je zit daarna nergens aan vast.'],
   ];
   const svc = [
     ['google-ads-beheer', 'Google Ads beheer', 'Opzet, Tag Manager, wekelijkse optimalisatie en maandelijks overleg met één vaste specialist.', true],
@@ -300,37 +305,42 @@ ${band(`Op zoek naar een Google Ads specialist in ${c}?`)}</div></section>`;
     ['conversietracking-google-ads', 'Conversiemeting', 'GA4, Tag Manager en een koppeling met je CRM, zodat Google leert van echte klanten.'],
   ];
   const lb = (title, label, links, two) => `<nav class="linkbox" aria-label="${label}"><h3>${title}</h3><div${two ? ' class="two"' : ''}>${links.map(([t, h]) => `<a href="${h}">${esc(t)}</a>`).join('')}</div></nav>`;
-  const body = `<section class="hero"><div class="wrap">
+  const body = `<section class="hero">${photo('google-ads-specialist-in-overleg-met-klant', 'Google Ads specialisten in overleg met een klant aan tafel', '100vw', { cls: 'hero-bg', eager: true })}<div class="wrap">
 <div class="hero-text"><p class="kicker">Google Ads uitbesteden</p>
-<h1>Google Ads uitbesteden en meer halen uit hetzelfde budget.</h1>
-<p class="lead">Voor bedrijven in heel Nederland die al adverteren en weten dat er meer in zit. Eén vaste Google Ads specialist neemt je account over, stopt wat geld kost en bouwt uit wat klanten oplevert.</p>
-<div class="actions"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="btn btn-lg btn-outline" href="/gratis-accountcheck/">Gratis accountcheck</a></div>
-<p class="small">Geen lange contracten: je kunt elke maand stoppen. Of <a href="tel:${site.phoneHref}">bel ${site.phone}</a>.</p>
-${badge}</div>
-<div class="hero-card"><p class="prijsroos"><small>vanaf</small> <b>€ 199</b> <small>per maand</small></p><div><p class="title">Wat wil je uitbesteden?</p><p class="muted" style="font-size:15px">Kies waar je mee wilt starten. Je aanvraag staat in drie stappen klaar.</p></div>
-<div class="stack" style="gap:10px">
-<a class="choice" href="/aanvragen/?keuze=volledig"><span>Google Ads volledig uitbesteden</span>${arrow}</a>
-<a class="choice" href="/aanvragen/?keuze=overnemen"><span>Bestaand account laten overnemen</span>${arrow}</a>
-<a class="choice" href="/gratis-accountcheck/"><span>Mijn account laten checken</span>${arrow}</a>
-<a class="choice" href="/aanvragen/?keuze=opzetten"><span>Campagnes laten opzetten</span>${arrow}</a>
-</div><p class="small">Je krijgt binnen 1 dag reactie.</p></div>
+<h1>Google Ads uitbesteden? Laat je account eerst vrijblijvend analyseren.</h1>
+<p class="lead">Heb je een Google Ads account en het idee dat het beter kan? Een vaste specialist kijkt mee en laat zien waar budget weglekt en wat er nog in zit. Daarna beslis jij of je het beheer uitbesteedt.</p>
+<ul class="checks"><li>${check}<span>Vrijblijvend starten</span></li><li>${check}<span>Maandelijks opzegbaar</span></li><li>${check}<span>Het account blijft van jou</span></li><li>${check}<span>Eén vast aanspreekpunt</span></li></ul>
+<p class="trust">Officieel Google Partner · <a href="${site.reviews.url}" target="_blank" rel="noopener"><span class="ster" aria-hidden="true">★</span> ${site.reviews.score} op Google (${site.reviews.count} reviews)</a></p>
+</div>
+<form class="hero-card" id="accountcheck" data-wa="${site.whatsapp}" novalidate>
+<div><p class="title">Vrijblijvende accountanalyse</p><p class="muted" style="font-size:15px">Je aanvraag gaat via WhatsApp naar ons. Binnen 1 dag reactie.</p></div>
+<fieldset>
+<div class="field"><label for="ac-naam">Naam</label><input id="ac-naam" name="naam" type="text" autocomplete="name" required><p class="err" data-err="naam" hidden>Vul je naam in.</p></div>
+<div class="field"><label for="ac-email">E-mail</label><input id="ac-email" name="email" type="email" autocomplete="email" required><p class="err" data-err="email" hidden>Vul een geldig e-mailadres in.</p></div>
+<div class="field"><label for="ac-site">Website</label><input id="ac-site" name="website" type="text" inputmode="url" autocomplete="url" placeholder="www.jouwbedrijf.nl" required><p class="err" data-err="website" hidden>Vul je websiteadres in.</p></div>
+<div class="field hp"><label for="ac-hp">Laat dit veld leeg</label><input id="ac-hp" name="bedrijfsnaam2" tabindex="-1" autocomplete="off"></div>
+<button class="btn wa btn-lg" type="submit">${chat}Verstuur via WhatsApp</button>
+<p class="err" id="form-err" hidden>Versturen is niet gelukt. Probeer het opnieuw of bel ${site.phone}.</p>
+<p class="small" style="text-align:center">Liever bellen? <a href="tel:${site.phoneHref}">${site.phone}</a></p>
+</fieldset>
+</form>
 </div></section>
 
 <section class="facts" aria-label="Kerngegevens"><dl class="wrap">
-<div><dt>Eerste aanvragen</dt><dd>Meestal na 2 tot 4 weken</dd></div><div><dt>Optimalisatie</dt><dd>Elke week</dd></div><div><dt>Beheer vanaf</dt><dd>€ 199 per maand</dd></div><div><dt>Bureau</dt><dd>Google Partner, heel Nederland</dd></div>
+<div><dt>Analyse</dt><dd>Vrijblijvend</dd></div><div><dt>Reactie</dt><dd>Binnen 1 dag</dd></div><div><dt>Optimalisatie</dt><dd>Elke week</dd></div><div><dt>Opzeggen</dt><dd>Per maand</dd></div>
 </dl></section>
 
 <section class="section alt"><div class="wrap">
 <div class="stack narrow"><p class="kicker">Waarom googleadvertising.nl</p><h2>Eén vaste specialist, wekelijks aan het werk, altijd inzichtelijk.</h2></div>
 <div class="grid g3 pillars">
-<div class="pillar">${roosVast}<h3>Eén vast aanspreekpunt</h3><p>Geen accountmanager die doorverwijst. Je werkt rechtstreeks met <a href="${site.specialist.linkedin}" target="_blank" rel="noopener">${site.specialist.name}</a> of een vaste specialist uit zijn team, die zelf in je account zit.</p></div>
+<div class="pillar">${roosVast}<h3>Eén vast aanspreekpunt</h3><p>Geen accountmanager die doorverwijst. Je werkt rechtstreeks met een vaste specialist uit ons team, die zelf in je account zit.</p></div>
 <div class="pillar">${roosWekelijks}<h3>Wekelijks geoptimaliseerd</h3><p>Elke week wordt er bijgestuurd op wat echt werkt, niet pas aan het eind van het kwartaal.</p></div>
 <div class="pillar">${roosVizier}<h3>Transparante rapportage</h3><p>Je ziet precies wat elke euro oplevert, tot aan de aanvraag of order.</p></div>
 </div>
 </div></section>
 
 <section class="section" id="uitbesteden"><div class="wrap split">
-<div class="side">${photo('google-ads-specialist-in-overleg-met-klant', 'Google Ads specialist bespreekt de resultaten met een klant aan tafel', '(min-width: 1072px) 460px, calc(100vw - 48px)', { style: 'object-position:45% 25%' })}</div>
+<div class="side">${photo('google-ads-specialist-legt-aanpak-uit', 'Google Ads specialist legt de aanpak uit op kantoor', '(min-width: 1072px) 460px, calc(100vw - 48px)', { style: 'object-position:0% 50%' })}</div>
 <div class="main prose"><p class="kicker">In het kort</p><h2 style="margin-top:0">Wat is Google Ads uitbesteden?</h2>
 <p class="first">Google Ads uitbesteden betekent dat een specialist je advertentiecampagnes in Google opzet, beheert en verbetert, terwijl jij eigenaar blijft van het account en het budget. In Nederland kost dat bij een vaste specialist vanaf € 199 per maand beheerfee, naast het advertentiebudget dat je rechtstreeks aan Google betaalt, zonder minimumbudget en maandelijks opzegbaar.</p>
 <p>Je betaalt het advertentiebudget rechtstreeks aan Google en een vaste beheerfee aan het bureau. De specialist kiest de zoekwoorden, schrijft de advertenties, sluit irrelevante zoekopdrachten uit en stuurt de biedingen bij op basis van wat er werkelijk binnenkomt.</p>
@@ -339,28 +349,25 @@ ${badge}</div>
 
 <section class="section alt" id="werkwijze"><div class="wrap stack gap-lg">
 <div class="head-row"><div class="stack"><p class="kicker">Werkwijze · de Scherpstelcyclus</p><h2>Van aanvraag naar draaiende campagnes in drie stappen.</h2></div>
-${photo('google-ads-specialist-legt-aanpak-uit', 'Google Ads specialist legt de aanpak uit op kantoor', '(min-width: 900px) 400px, calc(100vw - 48px)', { style: 'aspect-ratio:3/2;object-position:50% 40%' })}</div>
+${photo('google-ads-team-aan-het-werk', 'Het Google Ads team aan het werk op kantoor', '(min-width: 900px) 400px, calc(100vw - 48px)', { style: 'aspect-ratio:3/2;object-position:50% 35%' })}</div>
 <ol class="steps grid g3">
-<li class="card"><span class="step-no">Stap 1</span><h3>Intake en accountcheck.</h3><p>We lopen je huidige account door: waar lekt budget weg, welke campagnes leveren klanten op en wat is een realistisch doel. Mkb-bedrijven kunnen na de intake direct aansluiten.</p></li>
+<li class="card"><span class="step-no">Stap 1</span><h3>Vrijblijvende analyse.</h3><p>We lopen je huidige account door: waar lekt budget weg, welke campagnes leveren klanten op en wat is een realistisch doel. Je zit nergens aan vast. Mkb-bedrijven kunnen daarna direct aansluiten.</p></li>
 <li class="card"><span class="step-no">Stap 2</span><h3>Opzet en meting.</h3><p>Campagnestructuur, zoekwoorden, advertenties en uitsluitingen. De conversiemeting koppelen we aan je formulieren, telefoon en waar mogelijk je CRM.</p></li>
 <li class="card"><span class="step-no">Stap 3</span><h3>Wekelijks bijsturen.</h3><p>Je vaste specialist werkt elke week in het account en bespreekt maandelijks met je de aanvragen, de kosten per aanvraag en wat er de komende maand verandert.</p></li>
-</ol><div><a class="btn" href="/gratis-accountcheck/">Start met een accountcheck</a></div>
+</ol><div class="actions">${waBtn('Vraag de analyse aan via WhatsApp')}<a class="link-strong" href="/gratis-accountcheck/">Of vul het formulier in</a></div>
 </div></section>
 
 <section class="section" id="diensten"><div class="wrap stack gap-lg">
-<div class="head-row"><div class="stack narrow"><p class="kicker">Diensten</p><h2>Alles uitbesteden of één onderdeel. Allebei kan.</h2><p class="lead">Volledig beheer is de meest gekozen vorm. Heb je zelf een marketeer in huis, dan nemen we alleen het deel over waar specialistische kennis voor nodig is.</p></div>
-${photo('google-ads-team-aan-het-werk', 'Het Google Ads team aan het werk op kantoor', '(min-width: 900px) 400px, calc(100vw - 48px)', { style: 'aspect-ratio:3/2;object-position:50% 35%' })}</div>
+<div class="head-row"><div class="stack narrow"><p class="kicker">Diensten</p><h2>Alles uitbesteden of één onderdeel. Allebei kan.</h2><p class="lead">Volledig beheer is de meest gekozen vorm. Heb je zelf een marketeer in huis, dan nemen we alleen het deel over waar specialistische kennis voor nodig is.</p></div></div>
 <div class="grid g4">${svc.map(([s, t, d, f]) => `<a class="card${f ? ' feature' : ''}" href="/${s}/">${f ? '<span class="tag">Meest gekozen</span>' : ''}<h3>${t}</h3><p>${d}</p></a>`).join('')}</div>
 </div></section>
 
 <section class="section alt" id="kosten"><div class="wrap split">
-<div class="side"><p class="kicker">Kosten</p><h2>Wat kost Google Ads uitbesteden?</h2><p class="muted" style="font-size:18px">Je betaalt twee dingen: het advertentiebudget aan Google en een beheerfee aan ons. Er is geen minimumbudget en opzeggen kan per maand. Mkb-bedrijven kunnen na een intake direct aansluiten.</p><div><a class="link-strong" href="/google-ads-kosten/">Lees alles over Google Ads kosten</a></div></div>
-<div class="main"><div class="table-box"><table><thead><tr><th scope="col">Onderdeel</th><th scope="col">Je betaalt aan</th><th scope="col">Bedrag</th></tr></thead><tbody>
-<tr><th scope="row">Advertentiebudget</th><td>Google</td><td>Bepaal je zelf, er is geen minimum</td></tr>
-<tr><th scope="row">Maandelijks beheer</th><td>googleadvertising.nl</td><td>Vanaf € 199 per maand, inclusief Tag Manager</td></tr>
-<tr><th scope="row">Eenmalige opzet</th><td>googleadvertising.nl</td><td>Staat in je voorstel</td></tr>
-<tr><th scope="row">Looptijd</th><td>n.v.t.</td><td>Maandelijks opzegbaar</td></tr>
-</tbody></table></div></div>
+<div class="side"><p class="kicker">Kosten</p><h2>Wat kost Google Ads uitbesteden?</h2><p class="muted" style="font-size:18px">Je betaalt twee dingen: het advertentiebudget aan Google en een beheerfee aan ons. Je begint met een vrijblijvende analyse en kunt daarna per maand opzeggen. Mkb-bedrijven kunnen na een intake direct aansluiten.</p><div><a class="link-strong" href="/google-ads-kosten/">Lees alles over Google Ads kosten</a></div></div>
+<div class="main"><div class="price"><div><p class="tag">Google Ads beheer</p><p class="amount" style="margin-top:10px">€ 199 <small>per maand, vanaf</small></p></div>
+${list(['Eén vaste specialist die zelf in je account werkt', 'Wekelijkse optimalisatie', 'Google Tag Manager inbegrepen', 'Maandelijks overleg en rapportage', 'Geen minimumbudget', 'Maandelijks opzegbaar'])}
+<p class="small">Het advertentiebudget betaal je rechtstreeks aan Google. Een eventuele eenmalige opzet staat in je voorstel.</p>
+<div class="actions">${waBtn('App ons')}<a class="btn btn-outline" href="/gratis-accountcheck/">Vrijblijvende analyse</a></div></div></div>
 </div></section>
 
 <section class="section" id="vergelijken"><div class="wrap stack gap-lg">
@@ -391,21 +398,17 @@ ${cases.map((c) => { const r = c.resultaten[0]; return `<a class="card" href="/k
 <section class="section alt" id="meer"><div class="wrap stack gap-lg">
 <div class="split"><div class="side"><p class="kicker">Meer lezen</p><h2>Google Ads uitbesteden, laten beheren of laten opzetten door een specialist.</h2></div>
 <div class="main muted" style="font-size:17px"><p>Of je nu een <a href="/google-ads-specialist/">Google Ads specialist</a> zoekt voor een eenmalige <a href="/google-ads-audit/">Google Ads audit</a> of een <a href="/google-ads-bureau/">Google Ads bureau</a> voor doorlopend beheer: je werkt met één vast team. We beheren accounts voor <a href="/google-ads-voor-b2b/">B2B-bedrijven</a>, <a href="/google-ads-voor-webshops/">webshops</a> en <a href="/google-ads-voor-mkb/">mkb-bedrijven</a> door heel Nederland.</p>
-<p>De meeste bedrijven komen bij ons met een account dat al loopt, maar te weinig oplevert. We <a href="/google-ads-account-overnemen/">nemen het over</a>, je houdt alle historie en we beginnen bij de campagnes waar het meeste te winnen valt. Adverteer je nog niet, dan beginnen we met <a href="/google-ads-laten-maken/">Google Ads laten maken</a>. Twijfel je nog, lees dan eerst wat <a href="/google-ads-kosten/">Google Ads kost</a>.</p></div></div>
-<div class="grid g3">
-${lb('Diensten', 'Diensten', spokes.filter((s) => s.group === 'dienst').map((s) => [s.name, `/${s.slug}/`]))}
-${lb('Voor wie en kennisbank', 'Doelgroepen en kennisbank', [...spokes.filter((s) => s.group === 'voor').map((s) => [s.name, `/${s.slug}/`]), ...articles.map((a) => [a.name, `/kennisbank/${a.slug}/`])])}
-${lb('Google Ads specialist per regio', 'Regio', cities.map(([c]) => [c, `/google-ads-specialist-${slugify(c)}/`]), true)}
-</div></div></section>
+<p>De meeste bedrijven komen bij ons met een account dat al loopt, maar te weinig oplevert. We <a href="/google-ads-account-overnemen/">nemen het over</a>, je houdt alle historie en we beginnen bij de campagnes waar het meeste te winnen valt. Adverteer je nog niet, dan beginnen we met <a href="/google-ads-laten-maken/">Google Ads laten maken</a>. Meer achtergrond lees je in de <a href="/kennisbank/">kennisbank</a>, bij de <a href="/klantcases/">klantcases</a> en op de pagina over <a href="/google-ads-kosten/">Google Ads kosten</a>.</p></div></div>
+</div></section>
 
 <div class="alt">${faqBlock('Alles wat je wilt weten voor je Google Ads uitbesteedt.', homeFaq)}</div>
 
 <section class="section" id="contact"><div class="wrap"><div class="band">
 ${photo('google-ads-specialist-aan-de-telefoon', 'Google Ads specialist aan de telefoon op kantoor', '200px', { cls: '', style: 'object-position:30% 35%' })}
-<div class="txt"><h2>Klaar om meer uit je Google Ads te halen?</h2><p class="muted" style="font-size:18px">Vraag een voorstel aan of laat eerst je account checken. Je krijgt antwoord van de specialist die ook je campagnes gaat beheren.</p></div>
-<div class="act"><a class="btn btn-lg" href="/aanvragen/">Voorstel aanvragen</a><a class="link-strong" href="tel:${site.phoneHref}">Bel ${site.phone}</a></div>
+<div class="txt"><h2>Benieuwd wat er nog in je Google Ads zit?</h2><p class="muted" style="font-size:18px">Stuur ons een WhatsApp-bericht met je website. Je krijgt binnen 1 dag antwoord van de specialist die ook je campagnes zou beheren. Vrijblijvend.</p></div>
+<div class="act">${waBtn('App ons via WhatsApp')}<a class="btn btn-outline" href="/gratis-accountcheck/">Vul het formulier in</a><a class="link-strong" href="tel:${site.phoneHref}">Of bel ${site.phone}</a></div>
 </div></div></section>`;
-  page({ path: '/', fullTitle: true, title: 'Google Ads uitbesteden vanaf € 199 per maand | googleadvertising.nl', desc: 'Google Ads uitbesteden aan een vaste specialist. Wekelijks geoptimaliseerd, Tag Manager inbegrepen, geen minimumbudget en maandelijks opzegbaar. Officieel Google Partner.', body, ld: [faqLd(homeFaq), { '@type': 'Service', name: 'Google Ads uitbesteden', serviceType: 'Google Ads beheer', url: `${site.url}/`, provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, offers: { '@type': 'Offer', price: '199', priceCurrency: 'EUR', description: 'Beheer per maand, inclusief Google Tag Manager, maandelijks opzegbaar' } }] });
+  page({ path: '/', scripts: '<script src="/form.js" defer></script>', fullTitle: true, title: 'Google Ads uitbesteden vanaf € 199 per maand | googleadvertising.nl', desc: 'Google Ads uitbesteden aan een vaste specialist. Wekelijks geoptimaliseerd, Tag Manager inbegrepen, geen minimumbudget en maandelijks opzegbaar. Officieel Google Partner.', body, ld: [faqLd(homeFaq), { '@type': 'Service', name: 'Google Ads uitbesteden', serviceType: 'Google Ads beheer', url: `${site.url}/`, provider: { '@id': `${site.url}/#organisatie` }, areaServed: { '@type': 'Country', name: 'Nederland' }, offers: { '@type': 'Offer', price: '199', priceCurrency: 'EUR', description: 'Beheer per maand, inclusief Google Tag Manager, maandelijks opzegbaar' } }] });
 }
 
 // ---------- aanvragen ----------
@@ -417,7 +420,7 @@ ${photo('google-ads-specialist-aan-de-telefoon', 'Google Ads specialist aan de t
 <form class="form-layout" id="aanvraag" data-wa="${site.whatsapp}" novalidate>
 <div class="form-main">
 <fieldset><legend><span class="tag">Stap 1</span><span class="t">Wat wil je uitbesteden?</span><span class="muted" style="font-size:15px">Meerdere keuzes mogelijk.</span></legend>
-<div class="opts">${opts.map(([v, l, d]) => `<label class="opt"><input type="checkbox" name="keuze" value="${esc(l)}" data-key="${v}"><span class="box"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>${l}</b><small>${d}</small></span></label>`).join('')}</div>
+<div class="opts">${opts.map(([v, l, d]) => `<label class="opt"><input type="checkbox" name="keuze" value="${esc(l)}" data-key="${v}"><span class="box"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B2530" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>${l}</b><small>${d}</small></span></label>`).join('')}</div>
 <p class="err" data-err="keuze" hidden>Kies minimaal één onderdeel.</p></fieldset>
 <fieldset><legend><span class="tag">Stap 2</span><span class="t">Hoe sta je er nu voor?</span></legend>
 <div class="stack" style="gap:10px"><p class="q" id="q-account">Heb je al een Google Ads account?</p><div class="pills" role="group" aria-labelledby="q-account">${pills('account', ['Ja, het loopt', 'Ja, maar het staat stil', 'Nee, nog niet'])}</div></div>
