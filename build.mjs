@@ -117,7 +117,7 @@ function footer() {
 ${col('Diensten', 'Diensten', d)}${col('Voor wie', 'Doelgroepen', w)}${col('Google Ads specialist in', 'Regio', r, true)}${col('Meer weten', 'Informatie', k)}
 <div><h2>Contact</h2><address><a class="hl" href="${site.companyUrl}">${site.company}</a><span>${site.street}</span><span>${site.zip} ${site.city}</span>${site.kvk ? `<span>KvK ${site.kvk}</span>` : ''}<a href="tel:${site.phoneHref}">${site.phone}</a><a href="/aanvragen/">Aanvraagformulier</a></address></div>
 </div>
-<div class="f-bottom"><div class="row"><p>© ${new Date().getFullYear()} googleadvertising.nl. Website door <a class="hl" href="${site.companyUrl}">Art of Advertising</a>.</p>
+<div class="f-bottom"><div class="row"><p>© ${new Date().getFullYear()} googleadvertising.nl. Website door <a class="hl" href="${site.companyUrl}">Art of Advertising</a>. Ook van ons: <a class="hl" href="https://www.ai-ontwikkeling.nl/">AI-ontwikkeling</a>, voor AI-websites, GEO en automatisering.</p>
 <div><a href="${site.companyUrl}/privacyverklaring">Privacyverklaring</a><a href="${site.companyUrl}/algemene-voorwaarden">Algemene voorwaarden</a>${site.gtm ? '<a href="/cookies/">Cookies</a><a href="/cookies/" data-cookie-settings>Cookie-instellingen</a>' : `<a href="${site.companyUrl}/cookieverklaring">Cookies</a>`}</div></div>
 <p>Onafhankelijke website, niet verbonden aan Google. Google Ads is een handelsmerk van Google LLC.</p></div>
 </div></footer>
